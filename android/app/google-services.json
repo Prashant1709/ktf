@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "502388246119",
+    "project_id": "ktf-dev",
+    "storage_bucket": "ktf-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502388246119:android:31a241f6a950fb3e3ff6c2",
+        "android_client_info": {
+          "package_name": "com.example.ktf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502388246119-tev3itebflijmgcscserf8rk7uboqm30.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS10_TXiMY9YefPoKaSw-g_b9SKl5KkSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502388246119-tev3itebflijmgcscserf8rk7uboqm30.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "502388246119-jjs5mige3q66l7apsagh7k19mq5u57o7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ktf"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
