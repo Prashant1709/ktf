@@ -2,6 +2,7 @@
 import 'package:hexcolor/hexcolor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:ktf/home.dart';
 
 class Merch extends StatelessWidget {
   const Merch({super.key});
@@ -121,7 +122,7 @@ class Merch extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(onPressed: (){
-        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext bc)=>home()));
       },
         child: Icon(Icons.chevron_left),),
     );

@@ -34,6 +34,7 @@ Future<UserCredential> signInWithGoogle() async {
 class _logInState extends State<logIn> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
         title: new Text('Are you sure?'),

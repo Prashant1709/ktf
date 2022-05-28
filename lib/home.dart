@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -65,10 +66,10 @@ addToCarousel(Widget carousel) {
 }
 
 Widget carousel(String image, String name, String details) {
-  return Container(
-    width: 540,
+  return SizedBox(
+    width: 530,
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,12 +79,13 @@ Widget carousel(String image, String name, String details) {
                   top: 20.0, left: 20, bottom: name.length <= 9 ? 20 : 13),
               child: Container(
                 width: 135,
-                child: Text(
+                child: AutoSizeText(
                   name,
                   style: GoogleFonts.sora(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 21),
+                  maxLines: 2,
                 ),
               ),
             ),
@@ -338,12 +340,13 @@ class _homeState extends State<home> {
                                   decoration: BoxDecoration(
                                     //border: Border.all(color: Colors.white),
                                   ),
-                                  child: Text(
+                                  child: AutoSizeText(
                                     "Unleash The Tech Event",
                                     style: GoogleFonts.sora(
                                         fontSize: 14,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
+                                    maxLines: 2,
                                   ),
                                 ),
                                 Padding(
@@ -354,17 +357,19 @@ class _homeState extends State<home> {
                                       //border: Border.all(color: Colors.white),
 
                                     ),
-                                    child: Text(
-                                      "Join with the great creators",
+                                    child: AutoSizeText(
+                                      "Join the great creators",
                                       style: GoogleFonts.sora(
                                         fontSize: 12,
                                         color: Colors.white,
                                       ),
+                                      maxLines: 2,
+                                      maxFontSize: 12,
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
+                                  padding: const EdgeInsets.only(top: 5.0),
                                   child: Container(
                                     width: 100,
                                     height: 30,
@@ -429,17 +434,18 @@ class _homeState extends State<home> {
                                     decoration: BoxDecoration(
                                       //border: Border.all(color: Colors.white),
                                     ),
-                                    child: Text(
-                                      "Looks like you are not interested in may events...",
+                                    child: AutoSizeText(
+                                      "Looks like you are not interested in many events...",
                                       style: GoogleFonts.sora(
                                         fontSize: 12,
                                         color: Colors.white,
                                       ),
+                                      maxLines: 3,
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
+                                  padding: const EdgeInsets.only(top: 7.0),
                                   child: Container(
                                     width: 80,
                                     height: 30,
