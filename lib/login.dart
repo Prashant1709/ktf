@@ -193,7 +193,7 @@ class _logInState extends State<logIn> {
                                   //print('Failed with error code: ${e.code}');
                                   showDialog(context: context, builder: (BuildContext b){
                                     return AlertDialog(
-                                      title: Text("Login Failed due to ${e.message}"),
+                                      title: Text("Login Failed: ${e.message}"),
                                     );
                                   });
                                   //print(e.message);

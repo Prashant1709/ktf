@@ -4,9 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:ktf/login.dart';
 import 'package:ktf/merch.dart';
 import 'package:ktf/profile.dart';
 
