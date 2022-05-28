@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:ktf/login.dart';
 import 'package:ktf/merch.dart';
 import 'package:ktf/profile.dart';
 
@@ -136,6 +139,12 @@ Widget carousel(String image, String name, String details) {
 }
 
 class _homeState extends State<home> {
+  String purl="";
+  @override
+  void initState() {         // this is called when the class is initialized or called for the first time
+    super.initState();
+    purl=FirebaseAuth.instance.currentUser!.photoURL.toString();//  this is the material super constructor for init state to link your instance initState to the global initState context
+  }
   @override
   Widget build(BuildContext context) {
     double h(double height) {
@@ -174,17 +183,25 @@ class _homeState extends State<home> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         actions: [
-          CircleAvatar(
-            radius: 30,
-            child: OutlinedButton(
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => Profile())),
-              child: Image.asset("assets/google.png"),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.transparent),
+          OutlinedButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile()));
+          },
+            style: OutlinedButton.styleFrom(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(90))),
+              side: BorderSide(color: Colors.transparent,),
+            ),
+            child: Container(
+              width: w(0.12),
+              height: h(0.12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: NetworkImage(purl),
+                    fit: BoxFit.scaleDown
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
       backgroundColor: Colors.black,
@@ -206,8 +223,10 @@ class _homeState extends State<home> {
               },
             ),
             ListTile(
-              title: const Text('Item 2'),
+              title: const Text('Logout'),
+              leading: Icon(Icons.exit_to_app),
               onTap: () {
+
                 // Update the state of the app.
                 // ...
               },

@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:ktf/login.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,6 +16,15 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String purl="";
+  String uname="";
+  String email="";
+  void initState() {         // this is called when the class is initialized or called for the first time
+    super.initState();
+    purl=FirebaseAuth.instance.currentUser!.photoURL.toString();
+    uname=FirebaseAuth.instance.currentUser!.displayName.toString();
+    email=FirebaseAuth.instance.currentUser!.email.toString();
+  }
   @override
   Widget build(BuildContext context) {
     double h(double height) {
@@ -42,27 +55,17 @@ class _ProfileState extends State<Profile> {
                     padding: const EdgeInsets.only(top: 40.0),
                     child: SizedBox(
                       width: w(0.28),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white70, width: 1),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Center(
-                          child: Image.asset("assets/dp.png"),
+                      child: Container(
+                        width: w(0.1),
+                        height: h(0.1),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: NetworkImage(purl),
+                              fit: BoxFit.scaleDown
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 220.0, top: 120),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(17),
-                    onTap: () {},
-                    child: CircleAvatar(
-                      backgroundColor: Colors.blue,
-                      radius: 17,
-                      child: Icon(Icons.edit),
                     ),
                   ),
                 ),
@@ -70,22 +73,24 @@ class _ProfileState extends State<Profile> {
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
-              child: Text(
-                "Shashank Deepak",
+              child: AutoSizeText(
+                "$uname",
                 style: GoogleFonts.sora(
                     color: HexColor("#2CB67D"),
                     fontSize: 18,
                     fontWeight: FontWeight.bold),
+                maxLines: 1,
               ),
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
-              child: Text(
-                "dummyemail@dum.com",
+              child: AutoSizeText(
+                "$email",
                 style: GoogleFonts.sora(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w700),
+                maxLines: 1,
               ),
             ),
             Padding(
@@ -144,6 +149,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
+/*
             Padding(
               padding: EdgeInsets.only(top: 70.0, left: 15),
               child: Row(
@@ -165,12 +171,17 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ),
+*/
             Padding(
               padding: const EdgeInsets.only(
                   left: 20.0, bottom: 20, right: 20, top: 50),
               child: InkWell(
                 borderRadius: BorderRadius.circular(20),
-                onTap: () {},
+                onTap: () {
+                  GoogleSignIn().signOut();
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => logIn()));
+                },
                 child: Container(
                   decoration: BoxDecoration(
                       color: HexColor("#2CB67D"),

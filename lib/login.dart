@@ -1,18 +1,33 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glass_kit/glass_kit.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ktf/home.dart';
-import 'package:ktf/main.dart';
 import 'package:text_divider/text_divider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class logIn extends StatefulWidget {
   const logIn({super.key});
 
   @override
   State<logIn> createState() => _logInState();
+}
+Future<UserCredential> signInWithGoogle() async {
+  // Trigger the authentication flow
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
+
+  // Once signed in, return the UserCredential
+  return await FirebaseAuth.instance.signInWithCredential(credential);
 }
 
 class _logInState extends State<logIn> {
@@ -119,7 +134,7 @@ class _logInState extends State<logIn> {
                             },
                             child: Center(
                               child: Text(
-                                "Sign Up",
+                                "Sign In",
                                 style: GoogleFonts.sora(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -146,7 +161,21 @@ class _logInState extends State<logIn> {
                           height: 50,
                           padding: EdgeInsets.only(left: 20),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              try {
+                                await signInWithGoogle().whenComplete(() => {
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => home()))
+                                });
+                              } on FirebaseAuthException catch  (e) {
+                                //print('Failed with error code: ${e.code}');
+                                showDialog(context: context, builder: (BuildContext b){
+                                  return AlertDialog(
+                                    title: Text("Login Failed due to ${e.message}"),
+                                  );
+                                });
+                                //print(e.message);
+                              }
+                            },
                             child: Center(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
