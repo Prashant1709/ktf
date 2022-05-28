@@ -43,7 +43,7 @@ List<String> sponsorLogoFileName = [
 
 Widget car =
 carousel("even_page.png", "Main Event Flashback", "Main Event FlashBack");
-Widget car2 = carousel("even_page.png", "Car 2", "Main FlashBack");
+Widget car2 = carousel("even_page.png", "Card 2", "Main FlashBack");
 
 Widget sponsorLogo(String image) {
   return Container(
