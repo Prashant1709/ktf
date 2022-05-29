@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 class events extends StatefulWidget {
   const events({Key? key}) : super(key: key);
 
@@ -10,6 +11,8 @@ class events extends StatefulWidget {
 }
 
 class _eventsState extends State<events> {
+  final int duration=10;
+  final CountDownController _controller = CountDownController();
   @override
   Widget build(BuildContext context) {
     double h(double height) {
@@ -102,7 +105,7 @@ class _eventsState extends State<events> {
                                         children: [
                                         Container(
                                           width: w(1),
-                                          height: h(0.45),
+                                          height: h(0.47),
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(28),
                                             color: Color(0xff2cb67d),
@@ -124,7 +127,117 @@ class _eventsState extends State<events> {
                                               left:70,
                                               child: Image.asset("assets/img.png")
                                           ),
-                                        ],)
+                                          Positioned(
+                                              top: 280,
+                                              right:40,
+                                              left:40,
+                                              child: Card(color: Colors.white,child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  Icon(Icons.people,color: Colors.black,),
+                                                  Column(
+                                                    children: [
+                                                      AutoSizeText("40+",style:GoogleFonts.sora(
+                                                        fontSize: 16,
+                                                      ),),
+                                                      AutoSizeText("People",style: GoogleFonts.sora(
+                                                        fontSize: 12,
+                                                      ),)
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: SizedBox(
+                                                      height: 60,
+                                                      width: 60,
+                                                      child: Stack(
+                                                        children:<Widget>[ Center(
+                                                          child: Container(
+                                                            child: CircularProgressIndicator(
+                                                                    strokeWidth: 5,
+                                                                    value: 0.6,
+                                                                    backgroundColor: Colors.grey,
+                                                                    color: Color.fromRGBO(79, 9, 29,1),
+
+                                                            ),
+                                                            width: 60,
+                                                            height:60,
+                                                          ),
+                                                        ),
+                                                          Center(child: Row(
+                                                            children: [
+                                                              Text("\t\t60%",textAlign:TextAlign.center,style: TextStyle(fontSize:20,fontStyle: FontStyle.italic,fontWeight: FontWeight.bold),),
+                                                            ],
+                                                          )),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  CircularCountDownTimer(width: 60, height: 60, duration: duration, fillColor: Colors.grey, ringColor: Colors.green,textStyle: TextStyle(fontSize:20,fontStyle: FontStyle.italic,fontWeight: FontWeight.bold),)
+                                                ],
+                                              ),)
+                                          ),
+                                        ],),
+                                      SizedBox(height: h(0.05),),
+                                      AutoSizeText("About Event",style: GoogleFonts.sora(fontSize: 17,color: Colors.white,fontWeight: FontWeight.bold),),
+                                      AutoSizeText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",style: GoogleFonts.sora(fontSize: 13,color: Colors.white,),maxLines: 8,),
+                                      SizedBox(height: h(0.1),),
+                                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          InkWell(onTap:(){},
+                                            child: Container(
+                                              height: h(0.06),
+                                              width: h(0.4),
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(colors: [
+                                                  HexColor("#7F5AF0"),
+                                                  HexColor("#481DCB"),
+                                                ]),
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "Add to Cart",
+                                                  style: GoogleFonts.sora(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: h(0.01),),
+                                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          InkWell(
+                                            onTap:(){},
+                                            child: Container(
+                                              height: h(0.06),
+                                              width: h(0.4),
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(colors: [
+                                                  HexColor("#ffffff"),
+                                                  HexColor("#2CB67D"),
+                                                ]),
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "Buy Now",
+                                                  style: GoogleFonts.sora(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   );
                                 });
