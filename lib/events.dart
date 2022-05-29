@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:ktf/cart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class events extends StatefulWidget {
   const events({Key? key}) : super(key: key);
 
@@ -55,7 +57,9 @@ class _eventsState extends State<events> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart,color: Colors.teal,),color: Colors.grey.shade300,)
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cart()));
+          }, icon: Icon(Icons.shopping_cart,color: Colors.teal,),color: Colors.grey.shade300,)
         ],
       ),
       backgroundColor: Colors.black,
@@ -184,7 +188,17 @@ class _eventsState extends State<events> {
                                       SizedBox(height: h(0.1),),
                                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          InkWell(onTap:(){},
+                                          InkWell(onTap:(){
+                                            Navigator.pop(context);
+                                            Fluttertoast.showToast(
+                                              msg: "Added to Cart",
+                                                toastLength: Toast.LENGTH_LONG,
+                                                gravity: ToastGravity.CENTER,
+                                                fontSize: 17,
+                                                backgroundColor: Colors.deepPurple,
+                                              textColor: Colors.white
+                                            );
+                                          },
                                             child: Container(
                                               height: h(0.06),
                                               width: h(0.4),
@@ -213,7 +227,10 @@ class _eventsState extends State<events> {
                                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           InkWell(
-                                            onTap:(){},
+                                            onTap:(){
+                                              Navigator.pop(context);
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cart()));
+                                            },
                                             child: Container(
                                               height: h(0.06),
                                               width: h(0.4),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:ktf/cart.dart';
 import 'package:ktf/events.dart';
 import 'package:ktf/merch.dart';
 import 'package:ktf/profile.dart';
@@ -456,7 +457,7 @@ class _homeState extends State<home> {
                                         BorderRadius.circular(60)),
                                     child: InkWell(
                                       onTap: () {
-                                        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cart()));
                                       },
                                       child: Center(
                                         child: Text(
