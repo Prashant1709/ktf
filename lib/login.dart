@@ -5,7 +5,10 @@ import 'package:glass_kit/glass_kit.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ktf/home.dart';
-import 'package:text_divider/text_divider.dart';
+import 'package:ktf/registration.dart';
+import 'package:text_divider/text_divider.dart';import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 
 class logIn extends StatefulWidget {
@@ -32,6 +35,46 @@ Future<UserCredential> signInWithGoogle() async {
 }
 
 class _logInState extends State<logIn> {
+  Future<bool> createUser() async{
+    final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final String? dn=FirebaseAuth.instance.currentUser!.displayName;
+    final String? em=FirebaseAuth.instance.currentUser!.email;
+    final String? pu=FirebaseAuth.instance.currentUser!.photoURL;
+    final String ui=FirebaseAuth.instance.currentUser!.uid;
+    final response=await http.post(
+      Uri.parse('https://ktf-backend.herokuapp.com/auth/google-data'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+      body: jsonEncode(<String, String>{
+        "displayName": dn.toString(),
+        "email": em.toString(),
+        "photoURL": pu.toString(),
+        "uid": ui.toString(),
+      }),
+
+    );
+    if (response.statusCode == 200) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      print(response.body);
+      print(response.statusCode);
+      if(response.body.contains("User already exists")){
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>home()));
+      }
+      else{
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>register()));
+      }
+      return true;
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      print(response.statusCode);
+      print(response.body);
+      return false;
+    }
+  }
   Future<bool> _onWillPop() async {
     return (await showDialog(
       barrierDismissible: false,
@@ -100,79 +143,7 @@ class _logInState extends State<logIn> {
                               ),
                             ),
                           ),
-                        ),/*
-                        Padding(
-                          padding:
-                          EdgeInsets.only(left: 20.0, right: 20, top: 30),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(20)),
-                            width: w(1),
-                            height: 50,
-                            padding: EdgeInsets.only(left: 20),
-                            child: TextFormField(
-                              style: TextStyle(fontSize: 18, color: Colors.black),
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Username",
-                                  hintStyle: TextStyle(color: Colors.grey)),
-                            ),
-                          ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, bottom: 10, right: 20, top: 20),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(20)),
-                            width: w(1),
-                            height: 50,
-                            padding: EdgeInsets.only(left: 20),
-                            child: TextFormField(
-                              style: TextStyle(fontSize: 18, color: Colors.black),
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.grey)),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, bottom: 20, right: 20, top: 10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: HexColor("#2CB67D"),
-                                border: Border.all(color: HexColor("#2CB67D")),
-                                borderRadius: BorderRadius.circular(20)),
-                            width: w(1),
-                            height: 50,
-                            padding: EdgeInsets.only(left: 20),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => home()));
-                              },
-                              child: Center(
-                                child: Text(
-                                  "Sign In",
-                                  style: GoogleFonts.sora(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        TextDivider.horizontal(
-                            text: const Text('or',
-                                style: TextStyle(color: Colors.white)),
-                            color: Colors.white,
-                            thickness: 1),*/
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 20.0, bottom: 20, right: 20, top: 10),
@@ -188,7 +159,10 @@ class _logInState extends State<logIn> {
                               onTap: () async {
                                 try {
                                   await signInWithGoogle().whenComplete(() => {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => home()))
+                                    if(createUser()==true){
+                                      print(createUser())
+                                    }
+                                  //print(FirebaseAuth.instance.currentUser!.uid.toString())
                                   });
                                 } on FirebaseAuthException catch  (e) {
                                   //print('Failed with error code: ${e.code}');

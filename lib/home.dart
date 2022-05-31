@@ -10,6 +10,10 @@ import 'package:ktf/events.dart';
 import 'package:ktf/merch.dart';
 import 'package:ktf/profile.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 class home extends StatefulWidget {
   const home({super.key});
 
@@ -144,7 +148,8 @@ class _homeState extends State<home> {
   @override
   void initState() {         // this is called when the class is initialized or called for the first time
     super.initState();
-    purl=FirebaseAuth.instance.currentUser!.photoURL.toString();//  this is the material super constructor for init state to link your instance initState to the global initState context
+    purl=FirebaseAuth.instance.currentUser!.photoURL.toString();
+
   }
   @override
   Widget build(BuildContext context) {
