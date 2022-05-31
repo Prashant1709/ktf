@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:glass_kit/glass_kit.dart';
@@ -7,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:ktf/home.dart';
 class register extends StatefulWidget {
   const register({Key? key}) : super(key: key);
 
@@ -16,14 +18,14 @@ class register extends StatefulWidget {
 
 class _registerState extends State<register> {
   String College="";
-  int pno=0;
+  String pno="";
   String course="";
   DateTime dob=DateTime.now();
   DateTime gy=DateTime.now();
   String address="";
-  int pincode=0;
+  String pincode="";
   String uid="";
-  String state = "Select State";
+  String state = "";
   String dropdownValue1 = "Select Gender";
     @override
     double h(double height) {
@@ -33,7 +35,51 @@ class _registerState extends State<register> {
     double w(double width) {
       return MediaQuery.of(context).size.width * width;
     }
+  Future<bool> createUser() async{
+    final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final String ui=FirebaseAuth.instance.currentUser!.uid;
+    final response=await http.post(
+      Uri.parse('https://ktf-backend.herokuapp.com/auth/user-data'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+      body: jsonEncode(<String, void>{
+      "college": College.toString(),
+      "phoneNumber": int.parse(pno.toString()),
+      "graduationYear": int.parse(gy.year.toString()),
+      "course": course.toString(),
+      "dob": dob.toString(),
+      "gender": dropdownValue1.toString(),
+      "address": address.toString(),
+      "state": state.toString(),
+      "pinCode": int.parse(pincode.toString()),
+        "uid": ui.toString(),
+      }),
 
+    );
+    if (response.statusCode == 200) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      print(response.body);
+      print(response.statusCode);
+      if(response.body.contains("User data updated successfully")){
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>home()));
+      }
+      else{
+        showDialog(context: context, builder: (BuildContext bs)=>AlertDialog(
+          title: Text("The registration failed due to: ${response.body}"),
+        ));
+      }
+      return true;
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      print(response.statusCode);
+      print(response.body);
+      return false;
+    }
+  }
     Widget build(BuildContext context) {
       return Scaffold(
         body: Stack(
@@ -178,9 +224,11 @@ class _registerState extends State<register> {
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
+                              icon: Icon(Icons.book,color: Colors.white,),
                                 border: InputBorder.none,
                                 hintText: "Course enrolled in",
                                 hintStyle: TextStyle(color: Colors.white)),
+                            onChanged: (value)=>course=value,
                           ),
                         ),
 
@@ -196,9 +244,11 @@ class _registerState extends State<register> {
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
+                              icon: Icon(Icons.note,color: Colors.white,),
                                 border: InputBorder.none,
                                 hintText: "Address",
                                 hintStyle: TextStyle(color: Colors.white)),
+                            onChanged: (value)=>address=value,
                           ),
                         ),
                         Container(
@@ -213,9 +263,11 @@ class _registerState extends State<register> {
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
+                              icon: Icon(Icons.account_balance,color: Colors.white,),
                                 border: InputBorder.none,
                                 hintText: "State",
                                 hintStyle: TextStyle(color: Colors.white)),
+                            onChanged: (value)=>state=value,
                           ),
                         ),
                         Container(
@@ -230,9 +282,11 @@ class _registerState extends State<register> {
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
+                              icon: Icon(Icons.pin_drop,color: Colors.white,),
                                 border: InputBorder.none,
                                 hintText: "PinCode",
                                 hintStyle: TextStyle(color: Colors.white)),
+                            onChanged: (value)=>pincode=value,
                           ),
                         ),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [
@@ -271,7 +325,9 @@ class _registerState extends State<register> {
                                   );
                                 }).toList(),
                           ),
-                          MaterialButton(onPressed: (){},color: Colors.green,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Submit",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),)
+                          MaterialButton(onPressed: (){
+                            createUser();
+                          },color: Colors.green,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Submit",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),)
 
                         ],)
                       ],
