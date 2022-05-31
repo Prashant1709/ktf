@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,7 @@ import 'package:ktf/cart.dart';
 import 'package:ktf/events.dart';
 import 'package:ktf/merch.dart';
 import 'package:ktf/profile.dart';
-
+import 'package:qr_flutter/qr_flutter.dart';
 class home extends StatefulWidget {
   const home({super.key});
 
@@ -158,31 +157,63 @@ class _homeState extends State<home> {
     }
 
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        // unselectedLabelStyle: TextStyle(color: Colors.white),
-
-          backgroundColor: Colors.black,
-          unselectedLabelStyle:
-          const TextStyle(color: Colors.white, fontSize: 14),
-          items: [
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        showModalBottomSheet(isScrollControlled: true,context: context, builder: (BuildContext bs)=>
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            QrImage(
+              data: '${FirebaseAuth.instance.currentUser!.uid}',
+              version: QrVersions.auto,
+              size: 320,
+              gapless: false,
+              embeddedImage: AssetImage('assets/msc logo.png'),
+              embeddedImageStyle: QrEmbeddedImageStyle(
+                size: Size(80, 80),
               ),
-              label: 'Home',
+            )
+          ],
+        )
+        );
+      },child: Icon(Icons.qr_code,color: Colors.white,),),
+      bottomNavigationBar: BottomAppBar(
+        //bottom navigation bar on scaffold
+          color: Colors.black,
+          shape: CircularNotchedRectangle(), //shape of notch
+          notchMargin:
+          5, //notch margin between floating button and bottom appbar
+          child: Container(
+            height: h(0.078),
+            child: Row(
+              //children inside bottom appbar
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.home,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>home()));
+                  },
+                ),
+                SizedBox(
+                  width: 30,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>Profile()));
+                  },
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(Icons.account_circle, color: Colors.white),
-              label: 'Profile',
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag, color: Colors.white),
-                label: "Shop"),
-          ]),
-      appBar: AppBar(
+          )),      appBar: AppBar(
         backgroundColor: Colors.transparent,
         actions: [
           OutlinedButton(onPressed: (){

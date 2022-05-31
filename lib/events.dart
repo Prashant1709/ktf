@@ -5,6 +5,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:ktf/cart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ktf/home.dart';
+import 'package:ktf/profile.dart';
 class events extends StatefulWidget {
   const events({Key? key}) : super(key: key);
 
@@ -25,30 +27,47 @@ class _eventsState extends State<events> {
       return MediaQuery.of(context).size.width * width;
     }
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        // unselectedLabelStyle: TextStyle(color: Colors.white),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(onPressed: (){
 
-          backgroundColor: Colors.black,
-          unselectedLabelStyle:
-          const TextStyle(color: Colors.white, fontSize: 14),
-          items: [
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-              label: 'Home',
+      },child: Icon(Icons.qr_code,color: Colors.white,),),
+      bottomNavigationBar: BottomAppBar(
+        //bottom navigation bar on scaffold
+          color: Colors.black,
+          shape: CircularNotchedRectangle(), //shape of notch
+          notchMargin:
+          5, //notch margin between floating button and bottom appbar
+          child: Container(
+            height: h(0.078),
+            child: Row(
+              //children inside bottom appbar
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.home,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>home()));
+                  },
+                ),
+                SizedBox(
+                  width: 30,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>Profile()));
+                  },
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Icon(Icons.account_circle, color: Colors.white),
-              label: 'Profile',
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag, color: Colors.white),
-                label: "Shop"),
-          ]),
+          )),
       appBar: AppBar(
         title: Text(
           "Events",
