@@ -80,6 +80,27 @@ class _registerState extends State<register> {
       return false;
     }
   }
+  showLoaderDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      backgroundColor: Colors.black54,
+      content: new Row(
+        children: [
+          CircularProgressIndicator(
+            color: Colors.white,
+          ),
+          Container(margin: EdgeInsets.only(left: 17),child:Text("Loading...",style: GoogleFonts.sora(
+            color: Colors.white,
+
+          ), )),
+        ],),
+    );
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
+  }
     Widget build(BuildContext context) {
       return Scaffold(
         body: Stack(
@@ -326,6 +347,7 @@ class _registerState extends State<register> {
                                 }).toList(),
                           ),
                           MaterialButton(onPressed: (){
+                            showLoaderDialog(context);
                             createUser();
                           },color: Colors.green,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Submit",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),)
 

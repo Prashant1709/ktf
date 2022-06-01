@@ -156,7 +156,7 @@ class _cartState extends State<cart> {
   }
   void openCheckout() async {
     var options = {
-      'key': 'rzp_live_ILgsfZCZoFIKMb',
+      'key': 'rzp_test_sF5XHMKvwK6fR1',
       'amount': 100,
       'name': 'KTF',
       'description': 'Event Fee',
@@ -170,11 +170,11 @@ class _cartState extends State<cart> {
     try {
       _razorpay.open(options);
     } catch (e) {
-      debugPrint('Error: e');
+      debugPrint('Error: $e');
     }
   }
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print('Success Response: $response');
+    print('Success Response: ${response.paymentId!} ${response.orderId!}');
     Fluttertoast.showToast(
         msg: "SUCCESS: " + response.paymentId!,
         toastLength: Toast.LENGTH_SHORT);

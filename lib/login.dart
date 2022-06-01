@@ -34,7 +34,7 @@ Future<UserCredential> signInWithGoogle() async {
 }
 
 class _logInState extends State<logIn> {
-  Future<bool> createUser() async{
+  Future<dynamic> createUser() async{
     final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
     final String? dn=FirebaseAuth.instance.currentUser!.displayName;
     final String? em=FirebaseAuth.instance.currentUser!.email;
@@ -60,19 +60,44 @@ class _logInState extends State<logIn> {
       print(response.body);
       print(response.statusCode);
       if(response.body.contains("User already exists")){
+        //CircularProgressIndicator();
         Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>home()));
       }
       else{
+        //CircularProgressIndicator();
         Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>register()));
       }
-      return true;
+      return CircularProgressIndicator();
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.
       print(response.statusCode);
       print(response.body);
-      return false;
+      return showDialog(context: context, builder: (BuildContext bs)=>AlertDialog(
+        title: Text(response.body),
+      ));
     }
+  }
+  showLoaderDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      backgroundColor: Colors.black54,
+      content: new Row(
+        children: [
+          CircularProgressIndicator(
+            color: Colors.white,
+          ),
+          Container(margin: EdgeInsets.only(left: 17),child:Text("Loading...",style: GoogleFonts.sora(
+            color: Colors.white,
+
+          ), )),
+        ],),
+    );
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
   }
   Future<bool> _onWillPop() async {
     return (await showDialog(
@@ -156,11 +181,12 @@ class _logInState extends State<logIn> {
                             padding: EdgeInsets.only(left: 20),
                             child: InkWell(
                               onTap: () async {
+
                                 try {
-                                  await signInWithGoogle().whenComplete(() => {
-                                    if(createUser()==true){
-                                      print(createUser())
-                                    }
+                                  await signInWithGoogle().then((value) => {
+                                  showLoaderDialog(context),
+                                    createUser()
+                                    //signInWithGoogle().then((value) => createUser())
                                   //print(FirebaseAuth.instance.currentUser!.uid.toString())
                                   });
                                 } on FirebaseAuthException catch  (e) {
