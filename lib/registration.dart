@@ -37,14 +37,14 @@ class _registerState extends State<register> {
     }
   Future<bool> createUser() async{
     final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
-    final String ui=FirebaseAuth.instance.currentUser!.uid;
+    //final String ui=FirebaseAuth.instance.currentUser!.uid;
     final response=await http.post(
       Uri.parse('https://ktf-backend.herokuapp.com/auth/user-data'),
       headers: <String, String>{
         "Authorization": "Bearer $id",
         "content-type": "application/json"
       },
-      body: jsonEncode(<String, void>{
+      body: jsonEncode(<String, dynamic>{
       "college": College.toString(),
       "phoneNumber": int.parse(pno.toString()),
       "graduationYear": int.parse(gy.year.toString()),
@@ -54,7 +54,7 @@ class _registerState extends State<register> {
       "address": address.toString(),
       "state": state.toString(),
       "pinCode": int.parse(pincode.toString()),
-        "uid": ui.toString(),
+        //"uid": ui.toString(),
       }),
 
     );

@@ -7,6 +7,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:ktf/login.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -14,17 +18,56 @@ class Profile extends StatefulWidget {
   @override
   State<Profile> createState() => _ProfileState();
 }
+class Prof {
+  final String join;
 
+  const Prof({
+    required this.join,
+  });
+
+  factory Prof.fromJson(Map<String, dynamic> json) {
+    return Prof(
+      join: json['createdAt'],
+
+    );
+  }
+}
 class _ProfileState extends State<Profile> {
   String purl="";
   String uname="";
   String email="";
+  late Future<Prof> futureprof;
+  Future<Prof> fetchDat() async {
+    final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final String uid= await FirebaseAuth.instance.currentUser!.uid;
+    final response = await http
+        .get(Uri.parse('https://ktf-backend.herokuapp.com/data/user'),
+    headers: <String, String>{
+      "Authorization": "Bearer $id",
+      "content-type": "application/json"
+    },);
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print(response.statusCode);
+      print(response.body);
+      return Prof.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Failed to load data');
+    }
+  }
   void initState() {         // this is called when the class is initialized or called for the first time
     super.initState();
     purl=FirebaseAuth.instance.currentUser!.photoURL.toString();
     uname=FirebaseAuth.instance.currentUser!.displayName.toString();
     email=FirebaseAuth.instance.currentUser!.email.toString();
+    futureprof = fetchDat();
   }
+
   @override
   Widget build(BuildContext context) {
     double h(double height) {
@@ -149,7 +192,6 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
-/*
             Padding(
               padding: EdgeInsets.only(top: 70.0, left: 15),
               child: Row(
@@ -161,17 +203,22 @@ class _ProfileState extends State<Profile> {
                         fontSize: 18,
                         fontWeight: FontWeight.w300),
                   ),
-                  Text(
-                    "12/04/2022",
-                    style: GoogleFonts.sora(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  )
+                  FutureBuilder<Prof>(
+                    future: futureprof,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(snapshot.data!.join.substring(0,10),style: GoogleFonts.sora(fontSize: 18,color: Colors.white),);
+                      } else if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+
+                      // By default, show a loading spinner.
+                      return const CircularProgressIndicator(color: Colors.white,strokeWidth: 1,);
+                    },
+                  ),
                 ],
               ),
             ),
-*/
             Padding(
               padding: const EdgeInsets.only(
                   left: 20.0, bottom: 20, right: 20, top: 50),

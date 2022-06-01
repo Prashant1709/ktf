@@ -39,18 +39,18 @@ class _logInState extends State<logIn> {
     final String? dn=FirebaseAuth.instance.currentUser!.displayName;
     final String? em=FirebaseAuth.instance.currentUser!.email;
     final String? pu=FirebaseAuth.instance.currentUser!.photoURL;
-    final String ui=FirebaseAuth.instance.currentUser!.uid;
+    //final String ui=FirebaseAuth.instance.currentUser!.uid;
     final response=await http.post(
       Uri.parse('https://ktf-backend.herokuapp.com/auth/google-data'),
       headers: <String, String>{
         "Authorization": "Bearer $id",
         "content-type": "application/json"
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode(<String, dynamic>{
         "displayName": dn.toString(),
         "email": em.toString(),
         "photoURL": pu.toString(),
-        "uid": ui.toString(),
+        //"uid": ui.toString(),
       }),
 
     );
