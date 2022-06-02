@@ -177,7 +177,8 @@ class _homeState extends State<home> {
               embeddedImageStyle: QrEmbeddedImageStyle(
                 size: Size(80, 80),
               ),
-            )
+            ),
+            AutoSizeText("Use this QR to get your entry",style: GoogleFonts.sora(color: Colors.black,fontSize: 17),)
           ],
         )
         );

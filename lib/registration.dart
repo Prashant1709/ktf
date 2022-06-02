@@ -22,6 +22,7 @@ class _registerState extends State<register> {
   String course="";
   DateTime dob=DateTime.now();
   DateTime gy=DateTime.now();
+  DateTime sy=DateTime.now();
   String address="";
   String pincode="";
   String uid="";
@@ -182,34 +183,25 @@ class _registerState extends State<register> {
                         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           MaterialButton(onPressed: (){
-                            showDialog(barrierDismissible: false,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Select Graduation Year"),
-                                  content: Container( // Need to use container to add size constraint.
-                                    width: 300,
-                                    height: 300,
-                                    child: YearPicker(
-                                      firstDate: DateTime.now(),
-                                      lastDate: DateTime(DateTime.now().year + 100, 1),
-                                      initialDate: DateTime.now(),
-                                      // save the selected date to _selectedDate DateTime variable.
-                                      // It's used to set the previous selected date when
-                                      // re-showing the dialog.
-                                      selectedDate: gy,
-                                      onChanged: (DateTime dateTime) {
-                                        // close the dialog when year is selected.
-                                        Navigator.pop(context);
-
-                                        // Do something with the dateTime selected.
-                                        // Remember that you need to use dateTime.year to get the year
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
+                            DatePicker.showDatePicker(context,
+                                showTitleActions: true,
+                                minTime: DateTime(2015, 1, 1),
+                                maxTime: DateTime(2035,1,1),
+                                theme: DatePickerTheme(
+                                    headerColor: Colors.black38,
+                                    backgroundColor: Colors.black45,
+                                    itemStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                    doneStyle:
+                                    TextStyle(color: Colors.white, fontSize: 16)),
+                                onChanged: (date) {
+                                  //print('change $date');
+                                }, onConfirm: (date) {
+                                  gy=date;
+                                  print(gy);
+                                }, currentTime: DateTime.now(), locale: LocaleType.en);
                           },color: Colors.green,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Grad. Year",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),),
                           MaterialButton(onPressed: (){
                             DatePicker.showDatePicker(context,
@@ -229,7 +221,7 @@ class _registerState extends State<register> {
                                   //print('change $date');
                                 }, onConfirm: (date) {
                                   dob=date;
-                                  print(dob);
+                                  //print(dob);
                                 }, currentTime: DateTime.now(), locale: LocaleType.en);
                           },color: Colors.green,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Date of Birth",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),)
                         ],),
@@ -301,13 +293,13 @@ class _registerState extends State<register> {
                           child: TextFormField(
                             style: TextStyle(fontSize: 18, color: Colors.white),
                             cursorColor: Colors.white,
-                            keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                               icon: Icon(Icons.pin_drop,color: Colors.white,),
                                 border: InputBorder.none,
                                 hintText: "PinCode",
                                 hintStyle: TextStyle(color: Colors.white)),
                             onChanged: (value)=>pincode=value,
+                            keyboardType: TextInputType.number,
                           ),
                         ),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [
