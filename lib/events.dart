@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -76,8 +77,38 @@ class _eventsState extends State<events> {
       // then throw an exception.
       print(response.statusCode);
       print(response.body);
-      throw Exception('Failed to load data');
+      throw Exception('Failed to load data json');
     }
+  }
+  Future<bool> cartadd(String eid) async{
+    final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    //final String ui=FirebaseAuth.instance.currentUser!.uid;
+    final response=await http.post(
+      Uri.parse('https://ktf-backend.herokuapp.com/cart/add'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+      body: jsonEncode(<String, dynamic>{
+        "eventID":eid,
+        //"uid": ui.toString(),
+      }),
+
+    );
+    if (response.statusCode == 200) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      print(response.body);
+      print(response.statusCode);
+      return true;
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      print(response.statusCode);
+      print(response.body);
+      return false;
+    }
+
   }
   void initState() {         // this is called when the class is initialized or called for the first time
     super.initState();
@@ -198,11 +229,14 @@ class _eventsState extends State<events> {
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: SizedBox(height: MediaQuery.of(context).size.height * 0.8,
-          child: ListView.builder(
-            itemBuilder: (context, position) {
-              return Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Flexible(child: Card(
+          child: FutureBuilder(
+            future: fetchDat(),
+            builder:(context,snapshot)=>snapshot.connectionState==ConnectionState.waiting?Center(child: CircularProgressIndicator(),):
+            snapshot.connectionState==ConnectionState.active?
+            snapshot.hasData?
+            ListView.builder(
+              itemBuilder: (context, position) {
+                return Flexible(child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
@@ -322,14 +356,15 @@ class _eventsState extends State<events> {
                                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           InkWell(onTap:(){
-                                            Navigator.pop(context);
+                                            //print("EID is ${_events[position]['eid']}");
+                                            cartadd(_events[position]['eid'].toString()).whenComplete(() => Navigator.pop(context));
                                             Fluttertoast.showToast(
-                                              msg: "Added to Cart",
+                                                msg: "Added to Cart",
                                                 toastLength: Toast.LENGTH_LONG,
                                                 gravity: ToastGravity.CENTER,
                                                 fontSize: 17,
                                                 backgroundColor: Colors.deepPurple,
-                                              textColor: Colors.white
+                                                textColor: Colors.white
                                             );
                                           },
                                             child: Container(
@@ -376,7 +411,7 @@ class _eventsState extends State<events> {
                                               ),
                                               child: Center(
                                                 child: Text(
-                                                  "Buy Now!",
+                                                  "Buy Now",
                                                   style: GoogleFonts.sora(
                                                     color: Colors.white,
                                                     fontSize: 16,
@@ -421,10 +456,10 @@ class _eventsState extends State<events> {
                           child: Image(image: AssetImage("assets/img.png")))
                     ],
                   ),
-                )),
-              );
-            },
-            itemCount: _events.length,
+                ));
+              },
+              itemCount: _events.length,
+            ):Text("has error"):Text("Still waiting"),
           ),
         ),
       ),

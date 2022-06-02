@@ -1,18 +1,67 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 class cart extends StatefulWidget {
   const cart({Key? key}) : super(key: key);
 
   @override
   State<cart> createState() => _cartState();
 }
+class eve {
+  final int price;
+  final int pno;
 
+  const eve({
+    required this.price,
+    required this.pno,
+  });
+
+  factory eve.fromJson(Map<String, dynamic> json) {
+    return eve(
+      price: json['cart']['amount'],
+      pno: json['phoneNumber']
+
+    );
+  }
+}
 class _cartState extends State<cart> {
   late Razorpay _razorpay;
+  late Future<eve> futureeve;
+  int amt=0;
+  int pno=0;
+  String em="";
+  Future<eve> fetchDat() async {
+    final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final response = await http
+        .get(Uri.parse('https://ktf-backend.herokuapp.com/data/user'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },);
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print(response.statusCode);
+      print(response.body);
+      //print("price is${eve.fromJson(jsonDecode(response.body)).price}");
+      pno=eve.fromJson(jsonDecode(response.body)).pno;
+      return eve.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Failed to load data');
+    }
+  }
   double h(double height) {
     return MediaQuery.of(context).size.height * height;
   }
@@ -65,8 +114,21 @@ class _cartState extends State<cart> {
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             AutoSizeText("Subtotal",style: GoogleFonts.sora(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.white),),
-            SizedBox(width: w(0.2),),
-            AutoSizeText("20,560",style: GoogleFonts.sora(color: Colors.green,fontSize: 16,fontWeight: FontWeight.bold),)
+            SizedBox(width: w(0.1),),
+            FutureBuilder<eve>(
+              future: futureeve,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  amt=snapshot.data!.price;
+                  return Text("${snapshot.data!.price}/-",style: GoogleFonts.sora(fontSize: 18,color: Colors.white),);
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+
+                // By default, show a loading spinner.
+                return const CircularProgressIndicator(color: Colors.white,strokeWidth: 1,);
+              },
+            ),
           ],
         ),
         Center(
@@ -109,7 +171,7 @@ class _cartState extends State<cart> {
           children: [
             InkWell(
               onTap:(){
-                openCheckout();
+                openCheckout(amt);
                 //Navigator.pop(context);
                 //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cart()));
               },
@@ -148,21 +210,22 @@ class _cartState extends State<cart> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    futureeve = fetchDat();
   }
   @override
   void dispose() {
     super.dispose();
     _razorpay.clear();
   }
-  void openCheckout() async {
+  void openCheckout(int price) async {
     var options = {
       'key': 'rzp_test_sF5XHMKvwK6fR1',
-      'amount': 100,
+      'amount': price*100,
       'name': 'KTF',
       'description': 'Event Fee',
       'retry': {'enabled': true, 'max_count': 1},
       'send_sms_hash': true,
-      'prefill': {'contact': '9172420601', 'email': 'upadhyay.prashant001@gmail.com'},
+      'prefill': {'contact': '$pno', 'email': '${FirebaseAuth.instance.currentUser?.email}'},
       'external': {
         'wallets': ['paytm']
       }
