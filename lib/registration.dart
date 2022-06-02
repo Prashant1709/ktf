@@ -323,7 +323,7 @@ class _registerState extends State<register> {
                               'Select Gender',
                               'Male',
                               'Female',
-                              'Others'
+                              'Can\'t Say'
                             ].map<DropdownMenuItem<String>>(
                                     (String value) {
                                   return DropdownMenuItem<String>(
