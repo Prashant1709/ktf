@@ -7,16 +7,130 @@ import 'package:ktf/cart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ktf/home.dart';
 import 'package:ktf/profile.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 class events extends StatefulWidget {
   const events({Key? key}) : super(key: key);
 
   @override
   State<events> createState() => _eventsState();
 }
-
+class eve{
+  final String? name;
+  final String? desct;
+  final String? date;
+  final String? eid;
+  final int? price;
+  final String? imgurl;
+  const eve({
+    required this.name,
+    required this.date,
+    required this.desct,
+    required this.eid,
+    required this.imgurl,
+    required this.price,
+});
+  factory eve.fromJson(Map<String, dynamic> json) {
+    return eve(
+      name: json['name'],
+      date: json['eventDate'],
+      eid: json['eventID'],
+      price: json['price'],
+      imgurl: json['imageURL'],
+      desct: json['description'],
+    );
+  }
+}
 class _eventsState extends State<events> {
+  List<Map<String, dynamic>> _events = [];
   final int duration=10;
-  final CountDownController _controller = CountDownController();
+  late Razorpay _razorpay;
+  late Future<List<eve>> eventd;
+  Future<List<eve>> fetchDat() async {
+    final response = await http
+        .get(Uri.parse('https://ktf-backend.herokuapp.com/data/events'),
+      headers: <String, String>{
+        "content-type": "application/json"
+      },);
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print(response.statusCode);
+      print(response.body);
+      for(var i in jsonDecode(response.body)){
+        _events.add({
+          "name":eve.fromJson(i).name,
+          "date":eve.fromJson(i).date,
+          "desc":eve.fromJson(i).desct,
+          "imgurl":eve.fromJson(i).imgurl,
+          "price":eve.fromJson(i).price,
+          "eid":eve.fromJson(i).eid,
+        });
+      }
+      return _events[0]['price'];
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Failed to load data');
+    }
+  }
+  void initState() {         // this is called when the class is initialized or called for the first time
+    super.initState();
+    eventd = fetchDat();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+  void openCheckout(int price) async {
+    var options = {
+      'key': 'rzp_test_sF5XHMKvwK6fR1',
+      'amount': price,
+      'name': 'KTF',
+      'description': 'Event Fee',
+      'retry': {'enabled': true, 'max_count': 1},
+      'send_sms_hash': true,
+      'prefill': {'contact': '9172420601', 'email': 'upadhyay.prashant001@gmail.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    print('Success Response: ${response.paymentId!} ${response.orderId!}');
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId!,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    print('Error Response: $response');
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message!,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    print('External SDK Response: $response');
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET: " + response.walletName!,
+        toastLength: Toast.LENGTH_SHORT);
+  }
   @override
   Widget build(BuildContext context) {
     double h(double height) {
@@ -99,14 +213,14 @@ class _eventsState extends State<events> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: AutoSizeText("Event ${position+1}",style: GoogleFonts.sora(
+                            child: AutoSizeText("${_events[position]['name']}",style: GoogleFonts.sora(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 21),),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: AutoSizeText("Event Description",style: GoogleFonts.sora(
+                            child: AutoSizeText("${_events[position]['desc']}",style: GoogleFonts.sora(
                                 color: Colors.white,
                                 fontSize: 13),),
                           ),
@@ -203,7 +317,7 @@ class _eventsState extends State<events> {
                                         ],),
                                       SizedBox(height: h(0.05),),
                                       AutoSizeText("About Event",style: GoogleFonts.sora(fontSize: 17,color: Colors.white,fontWeight: FontWeight.bold),),
-                                      AutoSizeText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",style: GoogleFonts.sora(fontSize: 13,color: Colors.white,),maxLines: 8,),
+                                      AutoSizeText("${_events[position]['desc']}",style: GoogleFonts.sora(fontSize: 13,color: Colors.white,),maxLines: 8,),
                                       SizedBox(height: h(0.1),),
                                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
@@ -248,7 +362,7 @@ class _eventsState extends State<events> {
                                           InkWell(
                                             onTap:(){
                                               Navigator.pop(context);
-                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cart()));
+                                              openCheckout(_events[position]['price']*100);
                                             },
                                             child: Container(
                                               height: h(0.06),
@@ -262,7 +376,7 @@ class _eventsState extends State<events> {
                                               ),
                                               child: Center(
                                                 child: Text(
-                                                  "Buy Now",
+                                                  "Buy Now!",
                                                   style: GoogleFonts.sora(
                                                     color: Colors.white,
                                                     fontSize: 16,
@@ -290,7 +404,7 @@ class _eventsState extends State<events> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "499/-",
+                                    "${_events[position]['price']}/-",
                                     style: GoogleFonts.sora(
                                       color: Colors.white,
                                     ),
@@ -310,7 +424,7 @@ class _eventsState extends State<events> {
                 )),
               );
             },
-            itemCount: 5,
+            itemCount: _events.length,
           ),
         ),
       ),
