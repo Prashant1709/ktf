@@ -157,21 +157,21 @@ class _EventsState extends State<Events> {
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print('Success Response: ${response.paymentId!} ${response.orderId!}');
     Fluttertoast.showToast(
-        msg: "SUCCESS: " + response.paymentId!,
+        msg: "SUCCESS: ${response.paymentId!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     print('Error Response: $response');
     Fluttertoast.showToast(
-        msg: "ERROR: " + response.code.toString() + " - " + response.message!,
+        msg: "ERROR: ${response.code} - ${response.message!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     print('External SDK Response: $response');
     Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: " + response.walletName!,
+        msg: "EXTERNAL_WALLET: ${response.walletName!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 
@@ -200,7 +200,7 @@ class _EventsState extends State<Events> {
           shape: const CircularNotchedRectangle(), //shape of notch
           notchMargin:
               5, //notch margin between floating button and bottom appbar
-          child: Container(
+          child: SizedBox(
             height: h(0.078),
             child: Row(
               //children inside bottom appbar
@@ -269,7 +269,7 @@ class _EventsState extends State<Events> {
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.white,),
                   );
                 } else {
                   if (snap.hasError) {
@@ -420,30 +420,30 @@ class _EventsState extends State<Events> {
                                                                         Stack(
                                                                       children: <
                                                                           Widget>[
-                                                                        Center(
+                                                                        const Center(
                                                                           child:
-                                                                              Container(
+                                                                              SizedBox(
+                                                                            width:
+                                                                                60,
+                                                                            height:
+                                                                                60,
                                                                             child:
-                                                                                const CircularProgressIndicator(
+                                                                                CircularProgressIndicator(
                                                                               strokeWidth: 5,
                                                                               value: 0.6,
                                                                               backgroundColor: Colors.grey,
                                                                               color: Color.fromRGBO(79, 9, 29, 1),
                                                                             ),
-                                                                            width:
-                                                                                60,
-                                                                            height:
-                                                                                60,
                                                                           ),
                                                                         ),
                                                                         Center(
                                                                             child:
                                                                                 Row(
-                                                                          children: [
-                                                                            const Text(
+                                                                          children: const [
+                                                                            Text(
                                                                               "\t\t60%",
                                                                               textAlign: TextAlign.center,
-                                                                              style: const TextStyle(fontSize: 20, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+                                                                              style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
                                                                             ),
                                                                           ],
                                                                         )),
@@ -645,10 +645,10 @@ class _EventsState extends State<Events> {
                                   )
                                 ],
                               ),
-                              Container(
+                              const SizedBox(
                                   height: 125,
                                   width: 125,
-                                  child: const Image(
+                                  child: Image(
                                       image: AssetImage("assets/img.png")))
                             ],
                           ),
