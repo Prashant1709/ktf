@@ -16,12 +16,14 @@ class logIn extends StatefulWidget {
   @override
   State<logIn> createState() => _logInState();
 }
+
 Future<UserCredential> signInWithGoogle() async {
   // Trigger the authentication flow
   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
   // Obtain the auth details from the request
-  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  final GoogleSignInAuthentication? googleAuth =
+      await googleUser?.authentication;
 
   // Create a new credential
   final credential = GoogleAuthProvider.credential(
@@ -34,13 +36,14 @@ Future<UserCredential> signInWithGoogle() async {
 }
 
 class _logInState extends State<logIn> {
-  Future<dynamic> createUser() async{
-    final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
-    final String? dn=FirebaseAuth.instance.currentUser!.displayName;
-    final String? em=FirebaseAuth.instance.currentUser!.email;
-    final String? pu=FirebaseAuth.instance.currentUser!.photoURL;
+  Future<dynamic> createUser() async {
+    final String id =
+        await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final String? dn = FirebaseAuth.instance.currentUser!.displayName;
+    final String? em = FirebaseAuth.instance.currentUser!.email;
+    final String? pu = FirebaseAuth.instance.currentUser!.photoURL;
     //final String ui=FirebaseAuth.instance.currentUser!.uid;
-    final response=await http.post(
+    final response = await http.post(
       Uri.parse('https://ktf-backend.herokuapp.com/auth/google-data'),
       headers: <String, String>{
         "Authorization": "Bearer $id",
@@ -52,74 +55,86 @@ class _logInState extends State<logIn> {
         "photoURL": pu.toString(),
         //"uid": ui.toString(),
       }),
-
     );
     if (response.statusCode == 200) {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
       print(response.body);
       print(response.statusCode);
-      if(response.body.contains("User already exists")){
+      if (response.body.contains("User already exists")) {
         //CircularProgressIndicator();
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>home()));
-      }
-      else{
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext bs) => const home()));
+      } else {
         //CircularProgressIndicator();
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>register()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext bs) => const register()));
       }
-      return CircularProgressIndicator();
+      return const CircularProgressIndicator();
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.
       print(response.statusCode);
       print(response.body);
-      return showDialog(context: context, builder: (BuildContext bs)=>AlertDialog(
-        title: Text(response.body),
-      ));
+      return showDialog(
+          context: context,
+          builder: (BuildContext bs) => AlertDialog(
+                title: Text(response.body),
+              ));
     }
   }
-  showLoaderDialog(BuildContext context){
-    AlertDialog alert=AlertDialog(
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
       backgroundColor: Colors.black54,
       content: new Row(
         children: [
-          CircularProgressIndicator(
+          const CircularProgressIndicator(
             color: Colors.white,
           ),
-          Container(margin: EdgeInsets.only(left: 17),child:Text("Loading...",style: GoogleFonts.sora(
-            color: Colors.white,
-
-          ), )),
-        ],),
+          Container(
+              margin: const EdgeInsets.only(left: 17),
+              child: Text(
+                "Loading...",
+                style: GoogleFonts.sora(
+                  color: Colors.white,
+                ),
+              )),
+        ],
+      ),
     );
-    showDialog(barrierDismissible: false,
-      context:context,
-      builder:(BuildContext context){
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
         return alert;
       },
     );
   }
+
   Future<bool> _onWillPop() async {
     return (await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false), //<-- SEE HERE
-            child: new Text('No'),
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), //<-- SEE HERE
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: () => SystemNavigator.pop(), // <-- SEE HERE
+                child: new Text('Yes'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => SystemNavigator.pop(), // <-- SEE HERE
-            child: new Text('Yes'),
-          ),
-        ],
-      ),
-    )) ??
+        )) ??
         false;
   }
+
   @override
   double h(double height) {
     return MediaQuery.of(context).size.height * height;
@@ -137,7 +152,7 @@ class _logInState extends State<logIn> {
           children: [
             Container(
               height: h(1),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage("assets/background.png"),
                   fit: BoxFit.fill,
@@ -156,11 +171,11 @@ class _logInState extends State<logIn> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 10),
                           child: Container(
                             height: h(0.2),
                             width: w(0.48),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage("assets/msc logo.png"),
                                 fit: BoxFit.fill,
@@ -178,24 +193,26 @@ class _logInState extends State<logIn> {
                                 borderRadius: BorderRadius.circular(20)),
                             width: w(1),
                             height: 50,
-                            padding: EdgeInsets.only(left: 20),
+                            padding: const EdgeInsets.only(left: 20),
                             child: InkWell(
                               onTap: () async {
-
                                 try {
                                   await signInWithGoogle().then((value) => {
-                                  showLoaderDialog(context),
-                                    createUser()
-                                    //signInWithGoogle().then((value) => createUser())
-                                  //print(FirebaseAuth.instance.currentUser!.uid.toString())
-                                  });
-                                } on FirebaseAuthException catch  (e) {
+                                        showLoaderDialog(context),
+                                        createUser()
+                                        //signInWithGoogle().then((value) => createUser())
+                                        //print(FirebaseAuth.instance.currentUser!.uid.toString())
+                                      });
+                                } on FirebaseAuthException catch (e) {
                                   //print('Failed with error code: ${e.code}');
-                                  showDialog(context: context, builder: (BuildContext b){
-                                    return AlertDialog(
-                                      title: Text("Login Failed due to ${e.message}"),
-                                    );
-                                  });
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext b) {
+                                        return AlertDialog(
+                                          title: Text(
+                                              "Login Failed due to ${e.message}"),
+                                        );
+                                      });
                                   //print(e.message);
                                 }
                               },
@@ -203,9 +220,12 @@ class _logInState extends State<logIn> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Padding(padding: EdgeInsets.only(left: 5)),
-                                    Image(
-                                        image: AssetImage("assets/google.png"),
+                                    const Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 5)),
+                                    const Image(
+                                        image: const AssetImage(
+                                            "assets/google.png"),
                                         height: 20),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -217,7 +237,6 @@ class _logInState extends State<logIn> {
                                         ),
                                       ),
                                     ),
-
                                   ],
                                 ),
                               ),

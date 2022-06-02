@@ -15,6 +15,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 class home extends StatefulWidget {
   const home({super.key});
 
@@ -49,7 +50,7 @@ List<String> sponsorLogoFileName = [
 ];
 
 Widget car =
-carousel("even_page.png", "Main Event Flashback", "Main Event FlashBack");
+    carousel("even_page.png", "Main Event Flashback", "Main Event FlashBack");
 Widget car2 = carousel("even_page.png", "Card 2", "Main FlashBack");
 
 Widget sponsorLogo(String image) {
@@ -97,7 +98,7 @@ Widget carousel(String image, String name, String details) {
             ),
             Padding(
               padding:
-              EdgeInsets.only(left: 20, bottom: name.length <= 9 ? 30 : 15),
+                  EdgeInsets.only(left: 20, bottom: name.length <= 9 ? 30 : 15),
               child: Container(
                 width: 160,
                 child: Text(details,
@@ -147,32 +148,35 @@ Widget carousel(String image, String name, String details) {
 class _homeState extends State<home> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false), //<-- SEE HERE
-            child: new Text('No'),
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), //<-- SEE HERE
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: () => SystemNavigator.pop(), // <-- SEE HERE
+                child: new Text('Yes'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => SystemNavigator.pop(), // <-- SEE HERE
-            child: new Text('Yes'),
-          ),
-        ],
-      ),
-    )) ??
+        )) ??
         false;
   }
-  String purl="";
-  @override
-  void initState() {         // this is called when the class is initialized or called for the first time
-    super.initState();
-    purl=FirebaseAuth.instance.currentUser!.photoURL.toString();
 
+  String purl = "";
+  @override
+  void initState() {
+    // this is called when the class is initialized or called for the first time
+    super.initState();
+    purl = FirebaseAuth.instance.currentUser!.photoURL.toString();
   }
+
   @override
   Widget build(BuildContext context) {
     double h(double height) {
@@ -187,32 +191,43 @@ class _homeState extends State<home> {
       onWillPop: _onWillPop,
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(onPressed: (){
-          showModalBottomSheet(isScrollControlled: true,context: context, builder: (BuildContext bs)=>
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              QrImage(
-                data: '${FirebaseAuth.instance.currentUser!.uid}',
-                version: QrVersions.auto,
-                size: 320,
-                gapless: false,
-                embeddedImage: AssetImage('assets/msc logo.png'),
-                embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: Size(80, 80),
-                ),
-              ),
-              AutoSizeText("Use this QR to get your entry",style: GoogleFonts.sora(color: Colors.black,fontSize: 17),)
-            ],
-          )
-          );
-        },child: Icon(Icons.qr_code,color: Colors.white,),),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext bs) => Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        QrImage(
+                          data: '${FirebaseAuth.instance.currentUser!.uid}',
+                          version: QrVersions.auto,
+                          size: 320,
+                          gapless: false,
+                          embeddedImage: AssetImage('assets/msc logo.png'),
+                          embeddedImageStyle: QrEmbeddedImageStyle(
+                            size: Size(80, 80),
+                          ),
+                        ),
+                        AutoSizeText(
+                          "Use this QR to get your entry",
+                          style: GoogleFonts.sora(
+                              color: Colors.black, fontSize: 17),
+                        )
+                      ],
+                    ));
+          },
+          child: Icon(
+            Icons.qr_code,
+            color: Colors.white,
+          ),
+        ),
         bottomNavigationBar: BottomAppBar(
-          //bottom navigation bar on scaffold
+            //bottom navigation bar on scaffold
             color: Colors.black,
             shape: CircularNotchedRectangle(), //shape of notch
             notchMargin:
-            5, //notch margin between floating button and bottom appbar
+                5, //notch margin between floating button and bottom appbar
             child: Container(
               height: h(0.078),
               child: Row(
@@ -226,7 +241,10 @@ class _homeState extends State<home> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>home()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext bs) => home()));
                     },
                   ),
                   SizedBox(
@@ -238,20 +256,31 @@ class _homeState extends State<home> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>Profile()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext bs) => Profile()));
                     },
                   ),
                 ],
               ),
-            )),      appBar: AppBar(
+            )),
+        appBar: AppBar(
           backgroundColor: Colors.transparent,
           actions: [
-            OutlinedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile()));
-            },
+            OutlinedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => Profile()));
+              },
               style: OutlinedButton.styleFrom(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(90))),
-                side: BorderSide(color: Colors.transparent,),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(90))),
+                side: BorderSide(
+                  color: Colors.transparent,
+                ),
               ),
               child: Container(
                 width: w(0.12),
@@ -259,9 +288,7 @@ class _homeState extends State<home> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: NetworkImage(purl),
-                      fit: BoxFit.scaleDown
-                  ),
+                      image: NetworkImage(purl), fit: BoxFit.scaleDown),
                 ),
               ),
             ),
@@ -289,7 +316,6 @@ class _homeState extends State<home> {
                 title: const Text('Logout'),
                 leading: Icon(Icons.exit_to_app),
                 onTap: () {
-
                   // Update the state of the app.
                   // ...
                 },
@@ -306,11 +332,12 @@ class _homeState extends State<home> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Container(
                     child: CarouselSlider.builder(
-                      itemCount:
-                      carouselWidget.length == 1 ? 1 : carouselWidget.length,
+                      itemCount: carouselWidget.length == 1
+                          ? 1
+                          : carouselWidget.length,
                       options: CarouselOptions(
                         enableInfiniteScroll:
-                        carouselWidget.length == 1 ? false : true,
+                            carouselWidget.length == 1 ? false : true,
                         enlargeCenterPage: true,
                         height: 170,
                         aspectRatio: 5.0,
@@ -401,8 +428,8 @@ class _homeState extends State<home> {
                                   Container(
                                     width: 100,
                                     decoration: BoxDecoration(
-                                      //border: Border.all(color: Colors.white),
-                                    ),
+                                        //border: Border.all(color: Colors.white),
+                                        ),
                                     child: AutoSizeText(
                                       "Unleash The Tech Event",
                                       style: GoogleFonts.sora(
@@ -417,9 +444,9 @@ class _homeState extends State<home> {
                                     child: Container(
                                       width: 120,
                                       decoration: BoxDecoration(
-                                        //border: Border.all(color: Colors.white),
+                                          //border: Border.all(color: Colors.white),
 
-                                      ),
+                                          ),
                                       child: AutoSizeText(
                                         "Join the great creators",
                                         style: GoogleFonts.sora(
@@ -439,10 +466,15 @@ class _homeState extends State<home> {
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                          BorderRadius.circular(60)),
+                                              BorderRadius.circular(60)),
                                       child: InkWell(
                                         onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => events()));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          Events()));
                                         },
                                         child: Center(
                                           child: Text(
@@ -480,8 +512,8 @@ class _homeState extends State<home> {
                                   Container(
                                     width: 100,
                                     decoration: BoxDecoration(
-                                      //border: Border.all(color: Colors.white),
-                                    ),
+                                        //border: Border.all(color: Colors.white),
+                                        ),
                                     child: Text(
                                       "Your Cart",
                                       style: GoogleFonts.sora(
@@ -495,8 +527,8 @@ class _homeState extends State<home> {
                                     child: Container(
                                       width: 120,
                                       decoration: BoxDecoration(
-                                        //border: Border.all(color: Colors.white),
-                                      ),
+                                          //border: Border.all(color: Colors.white),
+                                          ),
                                       child: AutoSizeText(
                                         "Looks like you are not interested in many events...",
                                         style: GoogleFonts.sora(
@@ -515,10 +547,15 @@ class _homeState extends State<home> {
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                          BorderRadius.circular(60)),
+                                              BorderRadius.circular(60)),
                                       child: InkWell(
                                         onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cart()));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          cart()));
                                         },
                                         child: Center(
                                           child: Text(
@@ -556,8 +593,8 @@ class _homeState extends State<home> {
                                   Container(
                                     width: 120,
                                     decoration: BoxDecoration(
-                                      //border: Border.all(color: Colors.white),
-                                    ),
+                                        //border: Border.all(color: Colors.white),
+                                        ),
                                     child: Text(
                                       "Get your exclusive merch",
                                       style: GoogleFonts.sora(
@@ -571,8 +608,8 @@ class _homeState extends State<home> {
                                     child: Container(
                                       width: 120,
                                       decoration: BoxDecoration(
-                                        //border: Border.all(color: Colors.white),
-                                      ),
+                                          //border: Border.all(color: Colors.white),
+                                          ),
                                       child: Text(
                                         "Join the  MSC tribe",
                                         style: GoogleFonts.sora(
@@ -590,10 +627,15 @@ class _homeState extends State<home> {
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
-                                          BorderRadius.circular(10)),
+                                              BorderRadius.circular(10)),
                                       child: InkWell(
                                         onTap: () {
-                                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Merch()));
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          Merch()));
                                         },
                                         child: Center(
                                           child: Text(

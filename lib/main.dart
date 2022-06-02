@@ -14,24 +14,18 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
+
 User? user = FirebaseAuth.instance.currentUser;
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    if(user==null){
-      return MaterialApp(
-        title: 'KTF APP',
-        home: logIn(),
-      );
-    }
-    else{
-      return MaterialApp(
-        title: 'KTF APP',
-        home: home(),
-      );
-    }
+    return MaterialApp(
+      title: "KTF APP",
+      home: user == null ? const logIn() : const home(),
+    );
   }
 }
