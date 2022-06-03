@@ -216,7 +216,7 @@ class _EventsState extends State<Events> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext bs) => const home()));
+                            builder: (BuildContext bs) => const Home()));
                   },
                 ),
                 const SizedBox(

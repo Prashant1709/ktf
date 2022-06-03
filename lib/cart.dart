@@ -18,27 +18,32 @@ class cart extends StatefulWidget {
 class eve {
   final int price;
   final int pno;
-
+  final String? ename;
+  final int? eprice;
   const eve({
     required this.price,
     required this.pno,
+    required this.ename,
+    required this.eprice,
   });
 
   factory eve.fromJson(Map<String, dynamic> json) {
     return eve(
       price: json['cart']['amount'],
-      pno: json['phoneNumber']
-
+      pno: json['phoneNumber'],
+      ename: json['cart']['items']['name'],
+      eprice: json['cart']['items']['price'],
     );
   }
 }
 class _cartState extends State<cart> {
   late Razorpay _razorpay;
-  late Future<eve> futureeve;
   int amt=0;
   int pno=0;
   String em="";
-  Future<eve> fetchDat() async {
+  late List<Map<String, dynamic>> itemsd;
+  Future<List<Map<String, dynamic>>> fetchDat() async {
+    List<Map<String, dynamic>> _items = [];
     final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
     final response = await http
         .get(Uri.parse('https://ktf-backend.herokuapp.com/data/user'),
@@ -51,9 +56,16 @@ class _cartState extends State<cart> {
       // then parse the JSON.
       print(response.statusCode);
       print(response.body);
+      for (var i in jsonDecode(response.body)) {
+        _items.add({
+          "name": eve.fromJson(i).ename,
+          "price": eve.fromJson(i).price,
+        });
+        print(itemsd[0]['name']);
+      }
       //print("price is${eve.fromJson(jsonDecode(response.body)).price}");
       pno=eve.fromJson(jsonDecode(response.body)).pno;
-      return eve.fromJson(jsonDecode(response.body));
+      return _items;
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -87,52 +99,57 @@ class _cartState extends State<cart> {
         SingleChildScrollView(
           child: SizedBox(
             height: h(0.43),
-            child: ListView.builder(itemBuilder: (context,position){
-              return Padding(padding: EdgeInsets.all(6.0),
-              child: Flexible(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  color: HexColor("#1B1B1B"),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        AutoSizeText("Event ${position+1}",style: GoogleFonts.sora(fontSize: 16,color: Colors.white),),
-                        SizedBox(width: w(0.5),),
-                        AutoSizeText("499/-",style: GoogleFonts.sora(fontSize: 16,color: Colors.green),)
-                      ],
-                    ),
-                  ),
-                ),
-              ),);
-            },itemCount: 5,),
+            child: FutureBuilder(
+                future: fetchDat(),
+                builder: (context, snap) {
+                  if (snap.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white,),
+                    );
+                  } else {
+                    if (snap.hasError) {
+                      return Text(snap.error.toString());
+                    } else {
+                      final events = snap.data as List<Map<String, dynamic>>;
+
+                      return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ListView.builder(itemBuilder: (context,position){
+                            return Padding(padding: const EdgeInsets.all(6.0),
+                              child: Flexible(
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  color: HexColor("#1B1B1B"),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        AutoSizeText("${itemsd[position]['name']}",style: GoogleFonts.sora(fontSize: 16,color: Colors.white),),
+                                        SizedBox(width: w(0.5),),
+                                        AutoSizeText("${itemsd[position]['price']}/-",style: GoogleFonts.sora(fontSize: 16,color: Colors.green),)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),);
+                          },itemCount: itemsd.length,),
+                        ],
+                      );
+                    }
+                  }
+                }),
           ),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            AutoSizeText("Subtotal",style: GoogleFonts.sora(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.white),),
-            SizedBox(width: w(0.1),),
-            FutureBuilder<eve>(
-              future: futureeve,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  amt=snapshot.data!.price;
-                  return Text("${snapshot.data!.price}/-",style: GoogleFonts.sora(fontSize: 18,color: Colors.white),);
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-
-                // By default, show a loading spinner.
-                return const CircularProgressIndicator(color: Colors.white,strokeWidth: 1,);
-              },
-            ),
-          ],
-        ),
+        children: [
+          AutoSizeText("Subtotal",style: GoogleFonts.sora(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 17),),
+          AutoSizeText("$amt",style: GoogleFonts.sora(color: Colors.white,fontSize: 17),)
+        ],),
         Center(
-          child: Container(height: h(0.2),
+          child: SizedBox(height: h(0.2),
             width: w(0.8),
             child: Card(
               shape: RoundedRectangleBorder(
@@ -151,9 +168,9 @@ class _cartState extends State<cart> {
                           borderRadius: BorderRadius.circular(5)),
                       height: MediaQuery.of(context).size.height * 0.06,
                       width: MediaQuery.of(context).size.width * 0.9,
-                      padding: EdgeInsets.only(left: 4),
+                      padding:const EdgeInsets.only(left: 4),
                       child: TextFormField(
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style:const TextStyle(fontSize: 18, color: Colors.white),
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter Your Coupon Code",
@@ -210,7 +227,9 @@ class _cartState extends State<cart> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-    futureeve = fetchDat();
+    Future.delayed(const Duration(seconds: 0)).then((e) async {
+      itemsd = await fetchDat();
+    });
   }
   @override
   void dispose() {
@@ -225,7 +244,7 @@ class _cartState extends State<cart> {
       'description': 'Event Fee',
       'retry': {'enabled': true, 'max_count': 1},
       'send_sms_hash': true,
-      'prefill': {'contact': '$pno', 'email': '${FirebaseAuth.instance.currentUser?.email}'},
+      'prefill': {'contact':'9172420601', 'email': 'upadhyay.prashant001@gmail.com'},
       'external': {
         'wallets': ['paytm']
       }
@@ -239,21 +258,21 @@ class _cartState extends State<cart> {
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print('Success Response: ${response.paymentId!} ${response.orderId!}');
     Fluttertoast.showToast(
-        msg: "SUCCESS: " + response.paymentId!,
+        msg: "SUCCESS: ${response.paymentId!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     print('Error Response: $response');
      Fluttertoast.showToast(
-        msg: "ERROR: " + response.code.toString() + " - " + response.message!,
+        msg: "ERROR: ${response.code} - ${response.message!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     print('External SDK Response: $response');
      Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: " + response.walletName!,
+        msg: "EXTERNAL_WALLET: ${response.walletName!}",
         toastLength: Toast.LENGTH_SHORT);
   }
 }

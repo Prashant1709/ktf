@@ -55,7 +55,7 @@ class _logInState extends State<logIn> {
       print(response.statusCode);
       if (response.body.contains("User already exists")) {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext bs) => const home()));
+            MaterialPageRoute(builder: (BuildContext bs) => const Home()));
       } else {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext bs) => const register()));
@@ -95,7 +95,7 @@ class _logInState extends State<logIn> {
       print(response.statusCode);
       if (response.body.contains("User already exists")) {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext bs) => const home()));
+            MaterialPageRoute(builder: (BuildContext bs) => const Home()));
       } else {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext bs) => const register()));

@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "KTF APP",
-      home: user == null ? const logIn() : const home(),
+      home: user == null ? const logIn() : const Home(),
     );
   }
 }

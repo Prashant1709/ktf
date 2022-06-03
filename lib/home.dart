@@ -16,11 +16,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class home extends StatefulWidget {
-  const home({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<home> createState() => _homeState();
+  State<Home> createState() => _HomeState();
 }
 /*
 Crousel Widget Working
@@ -63,7 +63,7 @@ Widget sponsorLogo(String image) {
         onTap: () {},
         child: CircleAvatar(
           radius: 40,
-          backgroundImage: AssetImage("assets/" + image),
+          backgroundImage: AssetImage("assets/$image"),
         )),
   );
 }
@@ -84,7 +84,7 @@ Widget carousel(String image, String name, String details) {
             Padding(
               padding: EdgeInsets.only(
                   top: 20.0, left: 20, bottom: name.length <= 9 ? 20 : 13),
-              child: Container(
+              child: SizedBox(
                 width: 135,
                 child: AutoSizeText(
                   name,
@@ -99,7 +99,7 @@ Widget carousel(String image, String name, String details) {
             Padding(
               padding:
                   EdgeInsets.only(left: 20, bottom: name.length <= 9 ? 30 : 15),
-              child: Container(
+              child: SizedBox(
                 width: 160,
                 child: Text(details,
                     style: GoogleFonts.sora(color: Colors.white, fontSize: 14)),
@@ -137,7 +137,7 @@ Widget carousel(String image, String name, String details) {
           width: 134,
           height: 150,
           child: Image.asset(
-            "assets/" + image,
+            "assets/$image",
           ),
         ),
       ],
@@ -145,23 +145,23 @@ Widget carousel(String image, String name, String details) {
   );
 }
 
-class _homeState extends State<home> {
+class _HomeState extends State<Home> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
           barrierDismissible: false,
           context: context,
           builder: (context) => AlertDialog(
-            title: new Text('Are you sure?'),
-            content: new Text('Do you want to exit an App'),
+            title: const Text('Are you sure?'),
+            content: const Text('Do you want to exit an App'),
             actions: <Widget>[
               TextButton(
                 onPressed: () =>
                     Navigator.of(context).pop(false), //<-- SEE HERE
-                child: new Text('No'),
+                child: const Text('No'),
               ),
               TextButton(
                 onPressed: () => SystemNavigator.pop(), // <-- SEE HERE
-                child: new Text('Yes'),
+                child: const Text('Yes'),
               ),
             ],
           ),
@@ -201,7 +201,7 @@ class _homeState extends State<home> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         QrImage(
-                          data: '${FirebaseAuth.instance.currentUser!.uid}',
+                          data: FirebaseAuth.instance.currentUser!.uid,
                           version: QrVersions.auto,
                           size: 320,
                           gapless: false,
@@ -229,7 +229,7 @@ class _homeState extends State<home> {
             shape: CircularNotchedRectangle(), //shape of notch
             notchMargin:
                 5, //notch margin between floating button and bottom appbar
-            child: Container(
+            child: SizedBox(
               height: h(0.078),
               child: Row(
                 //children inside bottom appbar
@@ -245,7 +245,7 @@ class _homeState extends State<home> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext bs) => home()));
+                              builder: (BuildContext bs) => Home()));
                     },
                   ),
                   SizedBox(
@@ -302,7 +302,7 @@ class _homeState extends State<home> {
           child: ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(40.0)),
             child: Drawer(
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.black54,
               child: ListView(
                 //padding: const EdgeInsets.fromLTRB(0, 80, 0, 0),
                 children: [
@@ -321,6 +321,12 @@ class _homeState extends State<home> {
                     height: 60,
                 width: double.maxFinite,
                 padding: const EdgeInsets.all(10.0),
+                decoration: const BoxDecoration(
+                  color: Colors.tealAccent,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20.0),
+                  ),
+                ),
                 child: Row(
                   children: [
                     Icon(
@@ -331,17 +337,17 @@ class _homeState extends State<home> {
                     Text("About App ",style: TextStyle(color: Colors.white),),
                   ],
                 ),
-                decoration: const BoxDecoration(
-                  color: Colors.tealAccent,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20.0),
-                  ),
-                ),
                   ),
                   Container(
                     height: 60,
                     width: double.maxFinite,
                     padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
                     child: Row(
                       children: [
                         Icon(
@@ -352,17 +358,17 @@ class _homeState extends State<home> {
                         Text("Contact Us ",style: TextStyle(color: Colors.white),),
                       ],
                     ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.all(10.0),
                     decoration: const BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.all(
                         Radius.circular(20.0),
                       ),
                     ),
-                  ),
-                  Container(
-                    height: 60,
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.all(10.0),
                     child: Row(
                       children: [
                         Icon(
@@ -373,12 +379,6 @@ class _homeState extends State<home> {
                         Text("Help and Feedback ",style: TextStyle(color: Colors.white),),
                       ],
                     ),
-                    decoration: const BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -386,373 +386,339 @@ class _homeState extends State<home> {
           ),
         ),
         body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Container(
-                    child: CarouselSlider.builder(
-                      itemCount: carouselWidget.length == 1
-                          ? 1
-                          : carouselWidget.length,
-                      options: CarouselOptions(
-                        enableInfiniteScroll:
-                            carouselWidget.length == 1 ? false : true,
-                        enlargeCenterPage: true,
-                        height: 170,
-                        aspectRatio: 5.0,
-                      ),
-                      itemBuilder: (context, i, id) {
-                        //for onTap to redirect to another screen
-                        return GestureDetector(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: HexColor("#1B1B1B"),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: carouselWidget[i],
-                          ),
-                          onTap: () {},
-                        );
-                      },
-                    ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: CarouselSlider.builder(
+                  itemCount: carouselWidget.length == 1
+                      ? 1
+                      : carouselWidget.length,
+                  options: CarouselOptions(
+                    enableInfiniteScroll:
+                        carouselWidget.length == 1 ? false : true,
+                    enlargeCenterPage: true,
+                    height: 170,
+                    aspectRatio: 5.0,
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: h(0.06), left: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Sponsors",
-                        style: GoogleFonts.sora(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24),
+                  itemBuilder: (context, i, id) {
+                    //for onTap to redirect to another screen
+                    return GestureDetector(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: HexColor("#1B1B1B"),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: carouselWidget[i],
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(sponsorLogoFileName.length >= 5
-                            ? Icons.arrow_forward_rounded
-                            : null),
-                        color: Colors.white,
-                        tooltip: "More",
-                      )
+                      onTap: () {},
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: h(0.06), left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Sponsors",
+                      style: GoogleFonts.sora(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(sponsorLogoFileName.length >= 5
+                          ? Icons.arrow_forward_rounded
+                          : null),
+                      color: Colors.white,
+                      tooltip: "More",
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 5.0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      for (int i = 0; i < sponsorLogoFileName.length; i++)
+                        sponsorLogo(sponsorLogoFileName[i]),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          for (int i = 0; i < sponsorLogoFileName.length; i++)
-                            sponsorLogo(sponsorLogoFileName[i]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: Container(
-                    height: h(0.5),
-                    child: GridView.count(
-                      childAspectRatio: 10 / 10.6,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(8),
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 18,
-                      crossAxisCount: 2,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            //border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage("assets/Robot.png"),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 15.0),
+                child: SizedBox(
+                  height: h(0.5),
+                  child: GridView.count(
+                    childAspectRatio: 10 / 10.6,
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(8),
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 18,
+                    crossAxisCount: 2,
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          //border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/Robot.png"),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 50, left: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      //border: Border.all(color: Colors.white),
+                                      ),
+                                  child: AutoSizeText(
+                                    "Unleash The Tech Event",
+                                    style: GoogleFonts.sora(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    maxLines: 2,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Container(
+                                    width: 120,
+                                    decoration: BoxDecoration(
+                                        //border: Border.all(color: Colors.white),
+
+                                        ),
+                                    child: AutoSizeText(
+                                      "Join the great creators",
+                                      style: GoogleFonts.sora(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                      ),
+                                      maxLines: 2,
+                                      maxFontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: Container(
+                                    width: 100,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(60)),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Events()));
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          "Buy Now",
+                                          style: GoogleFonts.sora(
+                                            color: Colors.black,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 50, left: 5),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 100,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/cart.png"),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 50, left: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      //border: Border.all(color: Colors.white),
+                                      ),
+                                  child: Text(
+                                    "Your Cart",
+                                    style: GoogleFonts.sora(
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Container(
+                                    width: 120,
                                     decoration: BoxDecoration(
                                         //border: Border.all(color: Colors.white),
                                         ),
                                     child: AutoSizeText(
-                                      "Unleash The Tech Event",
+                                      "Looks like you are not interested in many events...",
                                       style: GoogleFonts.sora(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                      maxLines: 2,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: Container(
-                                      width: 120,
-                                      decoration: BoxDecoration(
-                                          //border: Border.all(color: Colors.white),
-
-                                          ),
-                                      child: AutoSizeText(
-                                        "Join the great creators",
-                                        style: GoogleFonts.sora(
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
-                                        maxLines: 2,
-                                        maxFontSize: 12,
+                                        fontSize: 12,
+                                        color: Colors.white,
                                       ),
+                                      maxLines: 3,
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: Container(
-                                      width: 100,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(60)),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          Events()));
-                                        },
-                                        child: Center(
-                                          child: Text(
-                                            "Buy Now",
-                                            style: GoogleFonts.sora(
-                                              color: Colors.black,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage("assets/cart.png"),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 50, left: 5),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 100,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 7.0),
+                                  child: Container(
+                                    width: 80,
+                                    height: 30,
                                     decoration: BoxDecoration(
-                                        //border: Border.all(color: Colors.white),
-                                        ),
-                                    child: Text(
-                                      "Your Cart",
-                                      style: GoogleFonts.sora(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: Container(
-                                      width: 120,
-                                      decoration: BoxDecoration(
-                                          //border: Border.all(color: Colors.white),
-                                          ),
-                                      child: AutoSizeText(
-                                        "Looks like you are not interested in many events...",
-                                        style: GoogleFonts.sora(
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
-                                        maxLines: 3,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 7.0),
-                                    child: Container(
-                                      width: 80,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(60)),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          cart()));
-                                        },
-                                        child: Center(
-                                          child: Text(
-                                            "View",
-                                            style: GoogleFonts.sora(
-                                              color: Colors.black,
-                                              fontSize: 13,
-                                            ),
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(60)),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        cart()));
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          "View",
+                                          style: GoogleFonts.sora(
+                                            color: Colors.black,
+                                            fontSize: 13,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage("assets/MSC.png"),
-                            ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/MSC.png"),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 50, left: 5),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 50, left: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                      //border: Border.all(color: Colors.white),
+                                      ),
+                                  child: Text(
+                                    "Get your exclusive merch",
+                                    style: GoogleFonts.sora(
+                                        fontSize: 13.9,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Container(
                                     width: 120,
                                     decoration: BoxDecoration(
                                         //border: Border.all(color: Colors.white),
                                         ),
                                     child: Text(
-                                      "Get your exclusive merch",
+                                      "Join the  MSC tribe",
                                       style: GoogleFonts.sora(
-                                          fontSize: 13.9,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Container(
-                                      width: 120,
-                                      decoration: BoxDecoration(
-                                          //border: Border.all(color: Colors.white),
-                                          ),
-                                      child: Text(
-                                        "Join the  MSC tribe",
-                                        style: GoogleFonts.sora(
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
+                                        fontSize: 12,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: Container(
-                                      width: 80,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          Merch()));
-                                        },
-                                        child: Center(
-                                          child: Text(
-                                            "Buy Now",
-                                            style: GoogleFonts.sora(
-                                              color: Colors.black,
-                                              fontSize: 13,
-                                            ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15.0),
+                                  child: Container(
+                                    width: 80,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Merch()));
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          "Buy Now",
+                                          style: GoogleFonts.sora(
+                                            color: Colors.black,
+                                            fontSize: 13,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ),
       ),
     );
   }
 }
-
-
-
-// ListTile(
-//
-//   leading: Icon(
-//     Icons.home,
-//     color: Colors.teal,
-//   ),
-//   title: Text("Home"),
-//   onTap: () {},
-// ),
-// ListTile(
-//   leading: Icon(
-//     Icons.exit_to_app,
-//     color: Colors.teal,
-//   ),
-//   title: Text("Logout"),
-//   onTap: () {
-//     // _auth.signOut();
-//     // Navigator.pop(context);
-//     //exit(0);
-//   },
-// ),
-// Text(
-//   "© MSC KIIT",
-//   textAlign: TextAlign.center,
-// ),

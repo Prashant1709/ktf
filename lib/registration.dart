@@ -65,7 +65,7 @@ class _registerState extends State<register> {
       print(response.body);
       print(response.statusCode);
       if(response.body.contains("User data updated successfully")){
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>home()));
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext bs)=>Home()));
       }
       else{
         showDialog(context: context, builder: (BuildContext bs)=>AlertDialog(
