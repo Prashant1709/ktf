@@ -190,6 +190,7 @@ class _homeState extends State<home> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        ///automaticallyImplyLeading: false,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -293,34 +294,95 @@ class _homeState extends State<home> {
               ),
             ),
           ],
+
         ),
         backgroundColor: Colors.black,
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
+        drawer: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 80, 0, 0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(40.0)),
+            child: Drawer(
+              backgroundColor: Colors.transparent,
+              child: ListView(
+                //padding: const EdgeInsets.fromLTRB(0, 80, 0, 0),
+                children: [
+                  Container(
+                    height: 60,
+                    width: 1,
+                    padding: const EdgeInsets.fromLTRB(30,0,0,0),
+                    color: Colors.transparent,
+                    child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Icon(Icons.arrow_back_ios_rounded,color: Colors.white,)),
+
+
+                  ),
+                  Container(
+                    height: 60,
+                width: double.maxFinite,
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.adb_outlined,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 20,),
+                    Text("About App ",style: TextStyle(color: Colors.white),),
+                  ],
                 ),
-                child: Text('Drawer Header'),
+                decoration: const BoxDecoration(
+                  color: Colors.tealAccent,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20.0),
+                  ),
+                ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.account_circle,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 20,),
+                        Text("Contact Us ",style: TextStyle(color: Colors.white),),
+                      ],
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add_box_outlined,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 20,),
+                        Text("Help and Feedback ",style: TextStyle(color: Colors.white),),
+                      ],
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              ListTile(
-                title: const Text('Item 1'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-              ListTile(
-                title: const Text('Logout'),
-                leading: Icon(Icons.exit_to_app),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ],
+            ),
           ),
         ),
         body: SingleChildScrollView(
@@ -666,3 +728,31 @@ class _homeState extends State<home> {
     );
   }
 }
+
+
+
+// ListTile(
+//
+//   leading: Icon(
+//     Icons.home,
+//     color: Colors.teal,
+//   ),
+//   title: Text("Home"),
+//   onTap: () {},
+// ),
+// ListTile(
+//   leading: Icon(
+//     Icons.exit_to_app,
+//     color: Colors.teal,
+//   ),
+//   title: Text("Logout"),
+//   onTap: () {
+//     // _auth.signOut();
+//     // Navigator.pop(context);
+//     //exit(0);
+//   },
+// ),
+// Text(
+//   "© MSC KIIT",
+//   textAlign: TextAlign.center,
+// ),
