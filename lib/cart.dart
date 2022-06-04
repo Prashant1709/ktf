@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ktf/merch.dart';
 import 'package:glass_kit/glass_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -196,7 +197,9 @@ class _cartState extends State<cart> {
                                                 Row(
                                                   children: [
                                                     IconButton(
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                       // openCheckout(merchas[index]['price']*100);
+                                                      },
                                                       icon: Icon(
                                                         Icons.edit,
                                                         color: Colors.white,
@@ -205,7 +208,12 @@ class _cartState extends State<cart> {
                                                           .shade400,
                                                     ),
                                                     IconButton(
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          merchas.removeAt(index);
+                                                        });
+
+                                                      },
                                                       icon: Icon(
                                                         Icons.delete,
                                                         color: Colors.white,
