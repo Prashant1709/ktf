@@ -115,20 +115,23 @@ class _cartState extends State<cart> {
                             return merchas[index].containsValue("event")
                                 ? Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: GlassContainer.frostedGlass(
-                                      height: h(0.15),
-                                      width: w(0.9),
-                                      borderColor: Colors.white,
+                                    child: //GlassContainer.frostedGlass(
+                                    Container(
+                                      height: 20,
+                                      width: 20,
+                                      //borderColor: Colors.white,
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+
+                                        // mainAxisAlignment:
+                                        //     MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                           // mainAxisAlignment:
+                                               // MainAxisAlignment.spaceEvenly,
+                                            // crossAxisAlignment:
+                                            //     CrossAxisAlignment.start,
                                             children: [
+
                                               AutoSizeText(
                                                 "${merchas[index]['name']}",
                                                 style: GoogleFonts.sora(
@@ -159,59 +162,71 @@ class _cartState extends State<cart> {
                                   )
                                 : Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: GlassContainer.frostedGlass(
-                                      height: h(0.15),
-                                      width: w(0.9),
-                                      borderColor: Colors.white,
+                                    child: //GlassContainer.frostedGlass(
+                                    Container(
+                                      height: 90,
+                                      width: 50,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xffF1b1b1b),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0),
+                                        ),
+                                      ),
+                                      //borderColor: Colors.white,
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                         MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(30, 10, 10, 0),
+
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
                                                 CrossAxisAlignment.start,
-                                            children: [
-                                              AutoSizeText(
-                                                "${merchas[index]['name']}",
-                                                style: GoogleFonts.sora(
-                                                    color: Colors.white,
-                                                    fontSize: 16),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Align(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      child: IconButton(
-                                                        onPressed: () {},
-                                                        icon: Icon(
-                                                          Icons.edit,
-                                                          color: Colors.white,
-                                                        ),
-                                                        color: Colors.tealAccent
-                                                            .shade400,
-                                                      )),
-                                                  IconButton(
-                                                    onPressed: () {},
-                                                    icon: Icon(
-                                                      Icons.delete,
+                                              children: [
+
+                                                AutoSizeText(
+                                                  "${merchas[index]['name']}",
+                                                  style: GoogleFonts.sora(
                                                       color: Colors.white,
+                                                      fontSize: 25),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    IconButton(
+                                                      onPressed: () {},
+                                                      icon: Icon(
+                                                        Icons.edit,
+                                                        color: Colors.white,
+                                                      ),
+                                                      color: Colors.tealAccent
+                                                          .shade400,
                                                     ),
-                                                    color: Colors
-                                                        .tealAccent.shade400,
-                                                  )
-                                                ],
-                                              )
-                                            ],
+                                                    IconButton(
+                                                      onPressed: () {},
+                                                      icon: Icon(
+                                                        Icons.delete,
+                                                        color: Colors.white,
+                                                      ),
+                                                      color: Colors
+                                                          .tealAccent.shade400,
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                          AutoSizeText(
-                                            "${merchas[index]['price']}",
-                                            style: GoogleFonts.sora(
-                                                color: Colors.teal,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(0, 5, 30, 5),
+                                            child: AutoSizeText(
+                                              "${merchas[index]['price']}",
+                                              style: GoogleFonts.sora(
+                                                  color: Colors.teal,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           )
                                         ],
                                       ),
