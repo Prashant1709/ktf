@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:glass_kit/glass_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -18,21 +19,28 @@ class cart extends StatefulWidget {
 class eve {
   final int price;
   final int pno;
-  final String? ename;
-  final int? eprice;
+  final bool cc;
+  final List<dynamic> items;
+  final List<Map<String,dynamic>> iob;
   const eve({
     required this.price,
     required this.pno,
-    required this.ename,
-    required this.eprice,
+    required this.cc,
+    required this.items,
+    required this.iob,
   });
 
   factory eve.fromJson(Map<String, dynamic> json) {
+    List <Map<String,dynamic>> temp=[];
+    for(var i in json['cart']['items']){
+      temp.add(i);
+    }
     return eve(
       price: json['cart']['amount'],
-      pno: json['phoneNumber'],
-      ename: json['cart']['items']['name'],
-      eprice: json['cart']['items']['price'],
+      cc: json['cart']['couponApplied'],
+      items: json['cart']['items'],
+      iob: temp,
+      pno: json['phoneNumber']
     );
   }
 }
@@ -41,9 +49,8 @@ class _cartState extends State<cart> {
   int amt=0;
   int pno=0;
   String em="";
-  late List<Map<String, dynamic>> itemsd;
-  Future<List<Map<String, dynamic>>> fetchDat() async {
-    List<Map<String, dynamic>> _items = [];
+  late Future<eve> futureeve;
+  Future<eve> fetchDat() async {
     final String id= await FirebaseAuth.instance.currentUser!.getIdToken(false);
     final response = await http
         .get(Uri.parse('https://ktf-backend.herokuapp.com/data/user'),
@@ -55,17 +62,8 @@ class _cartState extends State<cart> {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       print(response.statusCode);
-      print(response.body);
-      for (var i in jsonDecode(response.body)) {
-        _items.add({
-          "name": eve.fromJson(i).ename,
-          "price": eve.fromJson(i).price,
-        });
-        print(itemsd[0]['name']);
-      }
-      //print("price is${eve.fromJson(jsonDecode(response.body)).price}");
-      pno=eve.fromJson(jsonDecode(response.body)).pno;
-      return _items;
+      //print(response.body);
+      return  eve.fromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -99,54 +97,78 @@ class _cartState extends State<cart> {
         SingleChildScrollView(
           child: SizedBox(
             height: h(0.43),
-            child: FutureBuilder(
-                future: fetchDat(),
-                builder: (context, snap) {
-                  if (snap.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white,),
-                    );
-                  } else {
-                    if (snap.hasError) {
-                      return Text(snap.error.toString());
-                    } else {
-                      final events = snap.data as List<Map<String, dynamic>>;
-
-                      return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Center(
+              child: FutureBuilder<eve>(
+                future: futureeve,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final merchas = snapshot.data!.iob;
+                    //print(merchas[0].containsValue("Event-2"));
+                    return ListView.builder(itemBuilder: (context,index){
+                      return merchas[index].containsValue("event") ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GlassContainer.frostedGlass(height: h(0.15), width: w(0.9),borderColor: Colors.white,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ListView.builder(itemBuilder: (context,position){
-                            return Padding(padding: const EdgeInsets.all(6.0),
-                              child: Flexible(
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  color: HexColor("#1B1B1B"),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        AutoSizeText("${itemsd[position]['name']}",style: GoogleFonts.sora(fontSize: 16,color: Colors.white),),
-                                        SizedBox(width: w(0.5),),
-                                        AutoSizeText("${itemsd[position]['price']}/-",style: GoogleFonts.sora(fontSize: 16,color: Colors.green),)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),);
-                          },itemCount: itemsd.length,),
-                        ],
+                          Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AutoSizeText("${merchas[index]['name']}",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),
+                            IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: Colors.white,),color: Colors.tealAccent.shade400,)
+                          ],),
+                          AutoSizeText("${merchas[index]['price']}",style: GoogleFonts.sora(color: Colors.teal,fontSize: 16,fontWeight: FontWeight.bold),)
+                        ],),
+                        ),
+                      ):Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GlassContainer.frostedGlass(height: h(0.15), width: w(0.9),borderColor: Colors.white,
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AutoSizeText("${merchas[index]['name']}",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),
+                                  Row(children: [
+                                    IconButton(onPressed: (){}, icon: Icon(Icons.edit,color: Colors.white,),color: Colors.tealAccent.shade400,),
+                                    IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: Colors.white,),color: Colors.tealAccent.shade400,)
+                                  ],)
+                                ],),AutoSizeText("${merchas[index]['price']}",style: GoogleFonts.sora(color: Colors.teal,fontSize: 16,fontWeight: FontWeight.bold),)
+                            ],),),
                       );
-                    }
+                    },itemCount: merchas.length,
+                    );
+                  } else if (snapshot.hasError) {
+                    //print('${snapshot.error}');
+                    return const Text('Error Connecting to Servers');
                   }
-                }),
+
+                  // By default, show a loading spinner.
+                  return const CircularProgressIndicator(color: Colors.white,strokeWidth: 1,);
+                },
+              ),
+            ),
           ),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           AutoSizeText("Subtotal",style: GoogleFonts.sora(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 17),),
-          AutoSizeText("$amt",style: GoogleFonts.sora(color: Colors.white,fontSize: 17),)
+          FutureBuilder<eve>(
+            future: futureeve,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final merchas = snapshot.data!.iob as List<Map<String,dynamic>>;
+                print(merchas[0].containsValue("Event-2"));
+                amt=snapshot.data!.price;
+                return Text("${snapshot.data!.price}/-",style: GoogleFonts.sora(fontSize: 18,color: Colors.white),);
+              } else if (snapshot.hasError) {
+                print('${snapshot.error}');
+                return Text('snapshot.error');
+              }
+
+              // By default, show a loading spinner.
+              return const CircularProgressIndicator(color: Colors.white,strokeWidth: 1,);
+            },
+          ),
         ],),
         Center(
           child: SizedBox(height: h(0.2),
@@ -227,9 +249,7 @@ class _cartState extends State<cart> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-    Future.delayed(const Duration(seconds: 0)).then((e) async {
-      itemsd = await fetchDat();
-    });
+    futureeve = fetchDat();
   }
   @override
   void dispose() {

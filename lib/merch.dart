@@ -80,8 +80,8 @@ class _MerchState extends State<Merch> {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      print(response.statusCode);
-      print(response.body);
+      //print(response.statusCode);
+      //print(response.body);
       throw Exception('Failed to load data json');
     }
   }
@@ -216,7 +216,6 @@ class _MerchState extends State<Merch> {
                     return Text(snap.error.toString());
                   } else {
                     final merchas = snap.data as List<Map<String, dynamic>>;
-
                     return ListView.builder(itemBuilder: (context,position){
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
