@@ -306,17 +306,25 @@ class _HomeState extends State<Home> {
               child: ListView(
                 //padding: const EdgeInsets.fromLTRB(0, 80, 0, 0),
                 children: [
-                  Container(
-                    height: 60,
-                    width: 1,
-                    padding: const EdgeInsets.fromLTRB(30,0,0,0),
-                    color: Colors.transparent,
-                    child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Icon(Icons.arrow_back_ios_rounded,color: Colors.white,)),
-
-
+                  InkWell(
+                    child: Container(
+                      height: 60,
+                      width: 1,
+                      padding: const EdgeInsets.fromLTRB(30,0,0,0),
+                      color: Colors.transparent,
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Icon(Icons.arrow_back_ios_rounded,color: Colors.white,)),
+                    ),
+                    onTap: ()
+                    {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext bs) => Home()));
+                    },
                   ),
+                  SizedBox(height: 10,),
                   Container(
                     height: 60,
                 width: double.maxFinite,
@@ -334,16 +342,17 @@ class _HomeState extends State<Home> {
                       color: Colors.white,
                     ),
                     SizedBox(width: 20,),
-                    Text("About App ",style: TextStyle(color: Colors.white),),
+                    Text("About app ",style: TextStyle(color: Colors.white,fontSize: 20),),
                   ],
                 ),
                   ),
+                  SizedBox(height: 10,),
                   Container(
                     height: 60,
                     width: double.maxFinite,
                     padding: const EdgeInsets.all(10.0),
                     decoration: const BoxDecoration(
-                      color: Colors.transparent,
+                      color: Color(0xffF1b1b1b),
                       borderRadius: BorderRadius.all(
                         Radius.circular(20.0),
                       ),
@@ -355,16 +364,17 @@ class _HomeState extends State<Home> {
                           color: Colors.white,
                         ),
                         SizedBox(width: 20,),
-                        Text("Contact Us ",style: TextStyle(color: Colors.white),),
+                        Text("Contact Us ",style: TextStyle(color: Colors.white,fontSize: 20),),
                       ],
                     ),
                   ),
+                  SizedBox(height: 10,),
                   Container(
                     height: 60,
                     width: double.maxFinite,
                     padding: const EdgeInsets.all(10.0),
                     decoration: const BoxDecoration(
-                      color: Colors.transparent,
+                      color: Color(0xffF1b1b1b),
                       borderRadius: BorderRadius.all(
                         Radius.circular(20.0),
                       ),
@@ -376,7 +386,7 @@ class _HomeState extends State<Home> {
                           color: Colors.white,
                         ),
                         SizedBox(width: 20,),
-                        Text("Help and Feedback ",style: TextStyle(color: Colors.white),),
+                        Text("Help and Feedback ",style: TextStyle(color: Colors.white,fontSize: 20),),
                       ],
                     ),
                   ),
