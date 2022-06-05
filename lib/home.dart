@@ -22,21 +22,9 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
-/*
-Crousel Widget Working
 
-#  Create a widget using crousel(line no. )
-#  You have to pass the
-  1 - Name of the image to be displayed in the crousel widget. Eg - google.jpg(file must be present in the assets folder)
-  2 - Name of the event.
-  3 - Details of the event.
-# After creating the widget you can use addToCarousel() pass the the widget you created and it
-  will be added to List named carouselWidget.
-# Now the crousel will be displayed.
 
-*/
 
-List<Widget> carouselWidget = [car, car2];
 
 List<String> sponsorLogoFileName = [
   "dominos.png",
@@ -68,9 +56,7 @@ Widget sponsorLogo(String image) {
   );
 }
 
-addToCarousel(Widget carousel) {
-  carouselWidget.add(carousel);
-}
+
 
 Widget carousel(String image, String name, String details) {
   return SizedBox(
@@ -146,6 +132,10 @@ Widget carousel(String image, String name, String details) {
 }
 
 class _HomeState extends State<Home> {
+  List<Widget> carouselWidget = [car, car2];
+  addToCarousel(Widget carousel) {
+    carouselWidget.add(carousel);
+  }
   Future<bool> _onWillPop() async {
     return (await showDialog(
           barrierDismissible: false,
@@ -195,25 +185,38 @@ class _HomeState extends State<Home> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             showModalBottomSheet(
+              backgroundColor: Colors.black,
                 isScrollControlled: true,
                 context: context,
                 builder: (BuildContext bs) => Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        QrImage(
-                          data: FirebaseAuth.instance.currentUser!.uid,
-                          version: QrVersions.auto,
-                          size: 320,
-                          gapless: false,
-                          embeddedImage: AssetImage('assets/msc logo.png'),
-                          embeddedImageStyle: QrEmbeddedImageStyle(
-                            size: Size(80, 80),
+                        Container(
+                          height: h(0.3),
+                          width: w(0.65),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            //border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(20),
+                            ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: QrImage(
+                              data: FirebaseAuth.instance.currentUser!.uid,
+                              version: QrVersions.auto,
+                              size: 150,
+                              gapless: false,
+                              embeddedImage: AssetImage('assets/msc logo.png'),
+                              embeddedImageStyle: QrEmbeddedImageStyle(
+                                size: Size(60, 60),
+                              ),
+                            ),
                           ),
                         ),
                         AutoSizeText(
-                          "Use this QR to get your entry",
+                          "Your Digital Ticket",
                           style: GoogleFonts.sora(
-                              color: Colors.black, fontSize: 17),
+                              color: Colors.white, fontSize: 17),
                         )
                       ],
                     ));
@@ -707,6 +710,86 @@ class _HomeState extends State<Home> {
                                       child: Center(
                                         child: Text(
                                           "Buy Now",
+                                          style: GoogleFonts.sora(
+                                            color: Colors.black,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          //border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/Robot.png"),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 50, left: 5),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    //border: Border.all(color: Colors.white),
+                                  ),
+                                  child: AutoSizeText(
+                                    "Your Orders",
+                                    style: GoogleFonts.sora(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    maxLines: 2,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Container(
+                                    width: 120,
+                                    decoration: BoxDecoration(
+                                      //border: Border.all(color: Colors.white),
+
+                                    ),
+                                    child: AutoSizeText(
+                                      "Your purchase in one place",
+                                      style: GoogleFonts.sora(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                      ),
+                                      maxLines: 2,
+                                      maxFontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: Container(
+                                    width: 100,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                        BorderRadius.circular(60)),
+                                    child: InkWell(
+                                      onTap: () {
+
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          "View",
                                           style: GoogleFonts.sora(
                                             color: Colors.black,
                                             fontSize: 13,
