@@ -24,7 +24,7 @@ class Eve {
   final String? name;
   final String? desct;
   final String? date;
-  final String? eid;
+  final int? eid;
   final int? price;
   final String? imgurl;
   const Eve({
@@ -83,7 +83,7 @@ class _EventsState extends State<Events> {
     }
   }
 
-  Future<bool> cartadd(String eid) async {
+  Future<bool> cartadd(int eid) async {
     final String id =
         await FirebaseAuth.instance.currentUser!.getIdToken(false);
     //final String ui=FirebaseAuth.instance.currentUser!.uid;
@@ -103,12 +103,38 @@ class _EventsState extends State<Events> {
       // then parse the JSON.
       print(response.body);
       print(response.statusCode);
+      Fluttertoast.showToast(
+          msg:
+          "Added to Cart",
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor:
+          Colors
+              .deepPurple,
+          textColor:
+          Colors.white);
       return true;
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.
       print(response.statusCode);
       print(response.body);
+      Fluttertoast.showToast(
+          msg:
+          "Already in Card, can't be added again!",
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor:
+          Colors
+              .deepPurple,
+          textColor:
+          Colors.white);
       return false;
     }
   }
@@ -508,25 +534,11 @@ class _EventsState extends State<Events> {
                                                         onTap: () {
                                                           //print("EID is ${_events[position]['eid']}");
                                                           cartadd(events[position]
-                                                                      ['eid']
-                                                                  .toString())
+                                                                      ['eid'])
                                                               .whenComplete(() =>
                                                                   Navigator.pop(
                                                                       context));
-                                                          Fluttertoast.showToast(
-                                                              msg:
-                                                                  "Added to Cart",
-                                                              toastLength: Toast
-                                                                  .LENGTH_LONG,
-                                                              gravity:
-                                                                  ToastGravity
-                                                                      .CENTER,
-                                                              fontSize: 17,
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .deepPurple,
-                                                              textColor:
-                                                                  Colors.white);
+
                                                         },
                                                         child: Container(
                                                           height: h(0.06),

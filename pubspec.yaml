@@ -50,6 +50,7 @@ dependencies:
   qr_flutter: ^4.0.0
   http: ^0.13.4
   flutter_datetime_picker: ^1.5.1
+  swipeable: ^1.1.0
 
 dev_dependencies:
   flutter_test:

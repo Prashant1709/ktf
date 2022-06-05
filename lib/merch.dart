@@ -20,7 +20,7 @@ class Merch extends StatefulWidget {
 class Mer {
   final String? name;
   final String? desct;
-  final String? eid;
+  final int? eid;
   final int? price;
   final String? imgurl;
   final List<String>? size;

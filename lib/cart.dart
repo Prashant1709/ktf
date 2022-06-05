@@ -1,12 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ktf/merch.dart';
-import 'package:glass_kit/glass_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:swipeable/swipeable.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -49,6 +48,8 @@ class eve {
 class _cartState extends State<cart> {
   late Razorpay _razorpay;
   int amt = 0;
+  bool leftSelected=false;
+  bool rightSelected=false;
   int pno = 0;
   String em = "";
   late Future<eve> futureeve;
@@ -74,6 +75,30 @@ class _cartState extends State<cart> {
       print(response.statusCode);
       print(response.body);
       throw Exception('Failed to load data');
+    }
+  }
+  Future<eve> deleteCart(String elid) async {
+    final String id =
+    await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final http.Response response = await http.delete(
+      Uri.parse('https://ktf-backend.herokuapp.com/cart/remove/$elid'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+    );
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Deleted",
+          toastLength: Toast.LENGTH_SHORT);
+      print(response.body);
+      return eve.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a "200 OK response",
+      // then throw an exception.
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Failed to delete album.');
     }
   }
 
@@ -115,52 +140,70 @@ class _cartState extends State<cart> {
                           itemBuilder: (context, index) {
                             return merchas[index].containsValue("event")
                                 ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: //GlassContainer.frostedGlass(
-                                    Container(
-                                      height: 20,
-                                      width: 20,
-                                      //borderColor: Colors.white,
-                                      child: Row(
+                              padding: const EdgeInsets.all(8.0),
+                              child: //GlassContainer.frostedGlass(
+                              Container(
+                                height: 90,
+                                width: 50,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xffF1b1b1b),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20.0),
+                                  ),
+                                ),
+                                //borderColor: Colors.white,
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(30, 10, 10, 0),
 
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceEvenly,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                         children: [
-                                          Column(
-                                           // mainAxisAlignment:
-                                               // MainAxisAlignment.spaceEvenly,
-                                            // crossAxisAlignment:
-                                            //     CrossAxisAlignment.start,
-                                            children: [
 
-                                              AutoSizeText(
-                                                "${merchas[index]['name']}",
-                                                style: GoogleFonts.sora(
-                                                    color: Colors.white,
-                                                    fontSize: 16),
-                                              ),
+                                          AutoSizeText(
+                                            "${merchas[index]['name']}",
+                                            style: GoogleFonts.sora(
+                                                color: Colors.white,
+                                                fontSize: 17),
+                                          ),
+                                          Row(
+                                            children: [
                                               IconButton(
-                                                onPressed: () {},
-                                                icon: Icon(
+                                                onPressed: () {
+                                                  deleteCart(merchas[index]['id'].toString()).whenComplete(() => fetchDat());
+                                                },
+                                                icon: const Icon(
                                                   Icons.delete,
                                                   color: Colors.white,
                                                 ),
-                                                color:
-                                                    Colors.tealAccent.shade400,
+                                                color: Colors
+                                                    .tealAccent.shade400,
                                               )
                                             ],
-                                          ),
-                                          AutoSizeText(
-                                            "${merchas[index]['price']}",
-                                            style: GoogleFonts.sora(
-                                                color: Colors.teal,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
                                           )
                                         ],
                                       ),
                                     ),
-                                  )
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 5, 30, 5),
+                                      child: AutoSizeText(
+                                        "${merchas[index]['price']}",
+                                        style: GoogleFonts.sora(
+                                            color: Colors.teal,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
                                 : Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: //GlassContainer.frostedGlass(
@@ -192,7 +235,7 @@ class _cartState extends State<cart> {
                                                   "${merchas[index]['name']}",
                                                   style: GoogleFonts.sora(
                                                       color: Colors.white,
-                                                      fontSize: 25),
+                                                      fontSize: 17),
                                                 ),
                                                 Row(
                                                   children: [
@@ -200,7 +243,7 @@ class _cartState extends State<cart> {
                                                       onPressed: () {
                                                        // openCheckout(merchas[index]['price']*100);
                                                       },
-                                                      icon: Icon(
+                                                      icon: const Icon(
                                                         Icons.edit,
                                                         color: Colors.white,
                                                       ),
@@ -209,12 +252,9 @@ class _cartState extends State<cart> {
                                                     ),
                                                     IconButton(
                                                       onPressed: () {
-                                                        setState(() {
-                                                          merchas.removeAt(index);
-                                                        });
-
+                                                        deleteCart(merchas[index]['id'].toString()).whenComplete(() => fetchDat());
                                                       },
-                                                      icon: Icon(
+                                                      icon: const Icon(
                                                         Icons.delete,
                                                         color: Colors.white,
                                                       ),
@@ -232,7 +272,7 @@ class _cartState extends State<cart> {
                                               "${merchas[index]['price']}",
                                               style: GoogleFonts.sora(
                                                   color: Colors.teal,
-                                                  fontSize: 20,
+                                                  fontSize: 18,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           )
@@ -247,7 +287,6 @@ class _cartState extends State<cart> {
                         //print('${snapshot.error}');
                         return const Text('Error Connecting to Servers');
                       }
-
                       // By default, show a loading spinner.
                       return const CircularProgressIndicator(
                         color: Colors.white,
@@ -283,7 +322,7 @@ class _cartState extends State<cart> {
                       );
                     } else if (snapshot.hasError) {
                       print('${snapshot.error}');
-                      return Text('snapshot.error');
+                      return const Text('snapshot.error');
                     }
 
                     // By default, show a loading spinner.
@@ -340,38 +379,57 @@ class _cartState extends State<cart> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  onTap: () {
-                    openCheckout(amt);
-                    //Navigator.pop(context);
-                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cart()));
-                  },
-                  child: Container(
-                    height: h(0.06),
-                    width: h(0.4),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        HexColor("#ffffff"),
-                        HexColor("#2CB67D"),
-                      ]),
-                      borderRadius: BorderRadius.circular(20),
+            Container(
+              margin: const EdgeInsets.fromLTRB(20, 5, 20,5),
+              child: Swipeable(
+                threshold: 60.0,
+                onSwipeLeft: () {
+                  setState(() {
+                    rightSelected = true;
+                    leftSelected = false;
+                  });
+                },
+                onSwipeRight: () {
+                  setState(() {
+                    rightSelected = false;
+                    leftSelected = true;
+                  });
+                },
+                background: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(8.0),
+                      ),
+                      color: Colors.grey[300]),
+                  child: ListTile(
+                    leading: Container(
+                      width: 82.0,
+                      height: 82.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: Colors.green[500],
+                      ),
                     ),
-                    child: Center(
-                      child: Text(
-                        "Buy 5 items",
-                        style: GoogleFonts.sora(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    trailing: Container(
+                      width: 82.0,
+                      height: 82.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: Colors.green[500],
                       ),
                     ),
                   ),
                 ),
-              ],
+                child: Container(
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.0),
+                      ),
+                      color: Colors.white),
+                  child: const ListTile(
+                  ),
+                ),
+              ),
             ),
           ],
         ));
