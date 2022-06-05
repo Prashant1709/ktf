@@ -384,12 +384,14 @@ class _cartState extends State<cart> {
               child: Swipeable(
                 threshold: 60.0,
                 onSwipeLeft: () {
+                  Navigator.pop(context);
                   setState(() {
                     rightSelected = true;
                     leftSelected = false;
                   });
                 },
                 onSwipeRight: () {
+                  openCheckout(amt);
                   setState(() {
                     rightSelected = false;
                     leftSelected = true;
@@ -400,7 +402,7 @@ class _cartState extends State<cart> {
                       borderRadius: const BorderRadius.all(
                         Radius.circular(8.0),
                       ),
-                      color: Colors.grey[300]),
+                      color: Colors.green[500]),
                   child: ListTile(
                     leading: Container(
                       width: 82.0,
@@ -421,12 +423,15 @@ class _cartState extends State<cart> {
                   ),
                 ),
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration:const BoxDecoration(
                       borderRadius: BorderRadius.all(
                         Radius.circular(8.0),
                       ),
-                      color: Colors.white),
+                      color: Colors.greenAccent),
                   child: const ListTile(
+                    title: Text("Swipe >> to buy"),
+                    textColor: Colors.white,
+                    trailing: Text("Exit<<"),
                   ),
                 ),
               ),
