@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:ktf/home.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:swipeable/swipeable.dart';
@@ -101,6 +102,30 @@ class _cartState extends State<cart> {
       throw Exception('Failed to delete album.');
     }
   }
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black,
+        title: Text('Are you sure?',style: GoogleFonts.sora(color: Colors.white,fontSize: 17),),
+        content: Text('Do you want to exit cart',style: GoogleFonts.sora(color: Colors.white,fontSize: 17),),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).pop(false), //<-- SEE HERE
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (BuildContext bs)=>const Home())), // <-- SEE HERE
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    )) ??
+        false;
+  }
+
 
   double h(double height) {
     return MediaQuery.of(context).size.height * height;
@@ -112,181 +137,221 @@ class _cartState extends State<cart> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Cart",
-            style: GoogleFonts.sora(fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "Cart",
+              style: GoogleFonts.sora(fontWeight: FontWeight.bold),
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
           ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-        ),
-        backgroundColor: Colors.black,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SingleChildScrollView(
-              child: SizedBox(
-                height: h(0.43),
-                child: Center(
-                  child: FutureBuilder<eve>(
+          backgroundColor: Colors.black,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
+                child: SizedBox(
+                  height: h(0.43),
+                  child: Center(
+                    child: FutureBuilder<eve>(
+                      future: futureeve,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final merchas = snapshot.data!.iob;
+                          //print(merchas[0].containsValue("Event-2"));
+                          return ListView.builder(
+                            itemBuilder: (context, index) {
+                              return merchas[index].containsValue("event")
+                                  ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: //GlassContainer.frostedGlass(
+                                Container(
+                                  height: 90,
+                                  width: 50,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xffF1b1b1b),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20.0),
+                                    ),
+                                  ),
+                                  //borderColor: Colors.white,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(30, 10, 10, 0),
+
+                                        child: Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+
+                                            AutoSizeText(
+                                              "${merchas[index]['name']}",
+                                              style: GoogleFonts.sora(
+                                                  color: Colors.white,
+                                                  fontSize: 17),
+                                            ),
+                                            Row(
+                                              children: [
+                                                IconButton(
+                                                  onPressed: () {
+                                                    deleteCart(merchas[index]['id'].toString()).whenComplete(() => Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>const cart())));
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.delete,
+                                                    color: Colors.white,
+                                                  ),
+                                                  color: Colors
+                                                      .tealAccent.shade400,
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 5, 30, 5),
+                                        child: AutoSizeText(
+                                          "${merchas[index]['price']}",
+                                          style: GoogleFonts.sora(
+                                              color: Colors.teal,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: //GlassContainer.frostedGlass(
+                                      Container(
+                                        height: 90,
+                                        width: 50,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffF1b1b1b),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0),
+                                          ),
+                                        ),
+                                        //borderColor: Colors.white,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                           MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(30, 10, 10, 0),
+
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceEvenly,
+                                                crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                children: [
+
+                                                  AutoSizeText(
+                                                    "${merchas[index]['name']}",
+                                                    style: GoogleFonts.sora(
+                                                        color: Colors.white,
+                                                        fontSize: 17),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      IconButton(
+                                                        onPressed: () {
+                                                         // openCheckout(merchas[index]['price']*100);
+                                                        },
+                                                        icon: const Icon(
+                                                          Icons.edit,
+                                                          color: Colors.white,
+                                                        ),
+                                                        color: Colors.tealAccent
+                                                            .shade400,
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          deleteCart(merchas[index]['id'].toString()).whenComplete(() => Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>const cart())));
+                                                        },
+                                                        icon: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.white,
+                                                        ),
+                                                        color: Colors
+                                                            .tealAccent.shade400,
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(0, 5, 30, 5),
+                                              child: AutoSizeText(
+                                                "${merchas[index]['price']}",
+                                                style: GoogleFonts.sora(
+                                                    color: Colors.teal,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                            },
+                            itemCount: merchas.length,
+                          );
+                        } else if (snapshot.hasError) {
+                          //print('${snapshot.error}');
+                          return const Text('Error Connecting to Servers');
+                        }
+                        // By default, show a loading spinner.
+                        return const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 1,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  AutoSizeText(
+                    "Subtotal",
+                    style: GoogleFonts.sora(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17),
+                  ),
+                  FutureBuilder<eve>(
                     future: futureeve,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        final merchas = snapshot.data!.iob;
-                        //print(merchas[0].containsValue("Event-2"));
-                        return ListView.builder(
-                          itemBuilder: (context, index) {
-                            return merchas[index].containsValue("event")
-                                ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: //GlassContainer.frostedGlass(
-                              Container(
-                                height: 90,
-                                width: 50,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xffF1b1b1b),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20.0),
-                                  ),
-                                ),
-                                //borderColor: Colors.white,
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(30, 10, 10, 0),
-
-                                      child: Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-
-                                          AutoSizeText(
-                                            "${merchas[index]['name']}",
-                                            style: GoogleFonts.sora(
-                                                color: Colors.white,
-                                                fontSize: 17),
-                                          ),
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                onPressed: () {
-                                                  deleteCart(merchas[index]['id'].toString()).whenComplete(() => fetchDat());
-                                                },
-                                                icon: const Icon(
-                                                  Icons.delete,
-                                                  color: Colors.white,
-                                                ),
-                                                color: Colors
-                                                    .tealAccent.shade400,
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 5, 30, 5),
-                                      child: AutoSizeText(
-                                        "${merchas[index]['price']}",
-                                        style: GoogleFonts.sora(
-                                            color: Colors.teal,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                                : Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: //GlassContainer.frostedGlass(
-                                    Container(
-                                      height: 90,
-                                      width: 50,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xffF1b1b1b),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(20.0),
-                                        ),
-                                      ),
-                                      //borderColor: Colors.white,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                         MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(30, 10, 10, 0),
-
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                              children: [
-
-                                                AutoSizeText(
-                                                  "${merchas[index]['name']}",
-                                                  style: GoogleFonts.sora(
-                                                      color: Colors.white,
-                                                      fontSize: 17),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    IconButton(
-                                                      onPressed: () {
-                                                       // openCheckout(merchas[index]['price']*100);
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.edit,
-                                                        color: Colors.white,
-                                                      ),
-                                                      color: Colors.tealAccent
-                                                          .shade400,
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        deleteCart(merchas[index]['id'].toString()).whenComplete(() => fetchDat());
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.delete,
-                                                        color: Colors.white,
-                                                      ),
-                                                      color: Colors
-                                                          .tealAccent.shade400,
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(0, 5, 30, 5),
-                                            child: AutoSizeText(
-                                              "${merchas[index]['price']}",
-                                              style: GoogleFonts.sora(
-                                                  color: Colors.teal,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                          },
-                          itemCount: merchas.length,
+                        final merchas =
+                            snapshot.data!.iob as List<Map<String, dynamic>>;
+                        print(merchas[0].containsValue("Event-2"));
+                        amt = snapshot.data!.price;
+                        return Text(
+                          "${snapshot.data!.price}/-",
+                          style:
+                              GoogleFonts.sora(fontSize: 18, color: Colors.white),
                         );
                       } else if (snapshot.hasError) {
-                        //print('${snapshot.error}');
-                        return const Text('Error Connecting to Servers');
+                        print('${snapshot.error}');
+                        return const Text('snapshot.error');
                       }
+
                       // By default, show a loading spinner.
                       return const CircularProgressIndicator(
                         color: Colors.white,
@@ -294,150 +359,113 @@ class _cartState extends State<cart> {
                       );
                     },
                   ),
-                ),
+                ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                AutoSizeText(
-                  "Subtotal",
-                  style: GoogleFonts.sora(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17),
-                ),
-                FutureBuilder<eve>(
-                  future: futureeve,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final merchas =
-                          snapshot.data!.iob as List<Map<String, dynamic>>;
-                      print(merchas[0].containsValue("Event-2"));
-                      amt = snapshot.data!.price;
-                      return Text(
-                        "${snapshot.data!.price}/-",
-                        style:
-                            GoogleFonts.sora(fontSize: 18, color: Colors.white),
-                      );
-                    } else if (snapshot.hasError) {
-                      print('${snapshot.error}');
-                      return const Text('snapshot.error');
-                    }
-
-                    // By default, show a loading spinner.
-                    return const CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 1,
-                    );
-                  },
-                ),
-              ],
-            ),
-            Center(
-              child: SizedBox(
-                height: h(0.2),
-                width: w(0.8),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  color: HexColor("#1B1B1B"),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Coupon Code",
-                          style: GoogleFonts.sora(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.white),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(5)),
-                          height: MediaQuery.of(context).size.height * 0.06,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          padding: const EdgeInsets.only(left: 4),
-                          child: TextFormField(
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.white),
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Enter Your Coupon Code",
-                                hintStyle: TextStyle(color: Colors.grey[700])),
-                            onChanged: (value) {},
+              Center(
+                child: SizedBox(
+                  height: h(0.2),
+                  width: w(0.8),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    color: HexColor("#1B1B1B"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Coupon Code",
+                            style: GoogleFonts.sora(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white),
                           ),
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(5)),
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            padding: const EdgeInsets.only(left: 4),
+                            child: TextFormField(
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.white),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Enter Your Coupon Code",
+                                  hintStyle: TextStyle(color: Colors.grey[700])),
+                              onChanged: (value) {},
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(20, 5, 20,5),
+                child: Swipeable(
+                  threshold: 60.0,
+                  onSwipeLeft: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      rightSelected = true;
+                      leftSelected = false;
+                    });
+                  },
+                  onSwipeRight: () {
+                    openCheckout(amt);
+                    setState(() {
+                      rightSelected = false;
+                      leftSelected = true;
+                    });
+                  },
+                  background: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8.0),
                         ),
-                      ],
+                        color: Colors.green[500]),
+                    child: ListTile(
+                      leading: Container(
+                        width: 82.0,
+                        height: 82.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Colors.green[500],
+                        ),
+                      ),
+                      trailing: Container(
+                        width: 82.0,
+                        height: 82.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Colors.green[500],
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: Container(
+                    decoration:const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                        color: Colors.greenAccent),
+                    child: const ListTile(
+                      title: Text("Swipe >> to buy"),
+                      textColor: Colors.white,
+                      trailing: Text("Exit<<"),
                     ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(20, 5, 20,5),
-              child: Swipeable(
-                threshold: 60.0,
-                onSwipeLeft: () {
-                  Navigator.pop(context);
-                  setState(() {
-                    rightSelected = true;
-                    leftSelected = false;
-                  });
-                },
-                onSwipeRight: () {
-                  openCheckout(amt);
-                  setState(() {
-                    rightSelected = false;
-                    leftSelected = true;
-                  });
-                },
-                background: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(8.0),
-                      ),
-                      color: Colors.green[500]),
-                  child: ListTile(
-                    leading: Container(
-                      width: 82.0,
-                      height: 82.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: Colors.green[500],
-                      ),
-                    ),
-                    trailing: Container(
-                      width: 82.0,
-                      height: 82.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: Colors.green[500],
-                      ),
-                    ),
-                  ),
-                ),
-                child: Container(
-                  decoration:const BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8.0),
-                      ),
-                      color: Colors.greenAccent),
-                  child: const ListTile(
-                    title: Text("Swipe >> to buy"),
-                    textColor: Colors.white,
-                    trailing: Text("Exit<<"),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 
   @override

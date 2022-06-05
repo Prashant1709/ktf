@@ -9,7 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:ktf/cart.dart';
 
 class Merch extends StatefulWidget {
   const Merch({super.key});
@@ -52,7 +52,6 @@ class _MerchState extends State<Merch> {
   int quant=1;
 
   String size="Select Size";
-  late Razorpay _razorpay;
   late List<Map<String, dynamic>> merchs;
   Future<List<Map<String, dynamic>>> fetchDat() async {
     List<Map<String, dynamic>> _merch = [];
@@ -125,60 +124,8 @@ class _MerchState extends State<Merch> {
     Future.delayed(const Duration(seconds: 0)).then((e) async {
       merchs = await fetchDat();
     });
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _razorpay.clear();
-  }
-  void openCheckout(int price) async {
-    var options = {
-      'key': 'rzp_test_sF5XHMKvwK6fR1',
-      'amount': price,
-      'name': 'KTF',
-      'description': 'Event Fee',
-      'retry': {'enabled': true, 'max_count': 1},
-      'send_sms_hash': true,
-      'prefill': {
-        'contact': '9172420601',
-        'email': 'upadhyay.prashant001@gmail.com'
-      },
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: $e');
-    }
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print('Success Response: ${response.paymentId!} ${response.orderId!}');
-    Fluttertoast.showToast(
-        msg: "SUCCESS: ${response.paymentId!}",
-        toastLength: Toast.LENGTH_SHORT);
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    print('Error Response: $response');
-    Fluttertoast.showToast(
-        msg: "ERROR: ${response.code} - ${response.message!}",
-        toastLength: Toast.LENGTH_SHORT);
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    print('External SDK Response: $response');
-    Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: ${response.walletName!}",
-        toastLength: Toast.LENGTH_SHORT);
-  }
   @override
   Widget build(BuildContext context) {
     double h(double height) {
@@ -196,6 +143,21 @@ class _MerchState extends State<Merch> {
           "Merchandise",
           style: GoogleFonts.sora(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => const cart()));
+            },
+            icon: const Icon(
+              Icons.shopping_cart,
+              color: Colors.teal,
+            ),
+            color: Colors.grey.shade300,
+          )
+        ],
         centerTitle: true,
         backgroundColor: Colors.transparent,
 
@@ -574,7 +536,116 @@ class _MerchState extends State<Merch> {
                               Row(
                                 children: [
                                   MaterialButton(onPressed: (){
-                                    openCheckout(merchas[position]['price']*100);
+                                    showDialog(context: context, builder: (BuildContext bs)=>AlertDialog(
+                                      backgroundColor: Colors.black54,
+                                      title: Text("Customize your merch",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),
+                                      content: SizedBox(height: h(0.5),
+                                        child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Text("Size: ",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),
+                                                DropdownButton(
+                                                  dropdownColor: Colors.black38,
+                                                  value: size,
+                                                  icon: const Icon(Icons.keyboard_arrow_down),
+                                                  iconSize: 24,
+                                                  elevation: 16,
+                                                  style: const TextStyle(color: Colors.white),
+                                                  underline: Container(
+                                                    height: 2,
+                                                    color: Colors.blueGrey,
+                                                  ),
+                                                  onChanged: (String? newValue) {
+                                                    setState(() {
+                                                      size = newValue!;
+                                                    });
+                                                  },
+                                                  items: <String>[
+                                                    'Select Size',
+                                                    'S',
+                                                    'M',
+                                                    'L',
+                                                    'XL'
+                                                  ].map<DropdownMenuItem<String>>(
+                                                          (String value) {
+                                                        return DropdownMenuItem<String>(
+                                                          value: value,
+                                                          child: Text(
+                                                            value,
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                              color: Colors.white,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                ),
+                                              ],),
+                                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Text("Quantity: ",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),
+                                                DropdownButton(
+                                                  dropdownColor: Colors.black38,
+                                                  value: quant,
+                                                  icon: const Icon(Icons.keyboard_arrow_down),
+                                                  iconSize: 24,
+                                                  elevation: 16,
+                                                  style: const TextStyle(color: Colors.white),
+                                                  underline: Container(
+                                                    height: 2,
+                                                    color: Colors.blueGrey,
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    setState(() {
+                                                      quant = newValue as int;
+                                                    });
+                                                  },
+                                                  items: <int>[1,2,3,4,5
+                                                  ].map<DropdownMenuItem<int>>(
+                                                          (int value) {
+                                                        return DropdownMenuItem<int>(
+                                                          value: value,
+                                                          child: Text(
+                                                            value.toString(),
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                              color: Colors.white,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                ),
+                                              ],),
+                                            Center(
+                                              child: MaterialButton(onPressed: (){cartadd(merchas[position]
+                                              ['eid']
+                                                  .toString(),quant,size.toString())
+                                                  .whenComplete(() =>
+                                                  Navigator.pop(
+                                                      context));
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                  "Added to Cart",
+                                                  toastLength: Toast
+                                                      .LENGTH_LONG,
+                                                  gravity:
+                                                  ToastGravity
+                                                      .CENTER,
+                                                  fontSize: 17,
+                                                  backgroundColor:
+                                                  Colors
+                                                      .deepPurple,
+                                                  textColor:
+                                                  Colors.white);
+
+                                              },color: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Add to Cart",style: GoogleFonts.sora(color: Colors.black,fontSize: 16),),),
+                                            ),
+                                          ],),
+                                      ),
+                                    ));
+
                                   },color: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Buy",style: GoogleFonts.sora(color: Colors.black,fontSize: 16),),),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -687,7 +758,7 @@ class _MerchState extends State<Merch> {
                                             ],),
                                         ),
                                       ));
-                                    },backgroundColor: Colors.white,child: Icon(Icons.shopping_cart,color: Colors.black,),)),
+                                    },backgroundColor: Colors.white,child: Icon(Icons.add_shopping_cart_outlined,color: Colors.black,),)),
                                   )
                                 ],
                               )
