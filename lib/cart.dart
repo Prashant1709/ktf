@@ -45,14 +45,29 @@ class eve {
         pno: json['phoneNumber']);
   }
 }
-
+class Order{
+  final String oid;
+  final int amt;
+  final String curr;
+  const Order({
+    required this.amt,
+    required this.curr,
+    required this.oid,
+});
+  factory Order.fromJson(Map<String, dynamic> json){
+    return Order(oid: json["orderID"], amt: json["amount"], curr: json["currency"]);
+  }
+}
 class _cartState extends State<cart> {
+  late Future<Order> futureord;
   late Razorpay _razorpay;
   int amt = 0;
+  String oid="",curr="",email="";
   bool leftSelected=false;
   bool rightSelected=false;
   int pno = 0;
   String em = "";
+  String coupon="";
   late Future<eve> futureeve;
   Future<eve> fetchDat() async {
     final String id =
@@ -67,9 +82,29 @@ class _cartState extends State<cart> {
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
-      print(response.statusCode);
-      //print(response.body);
       return eve.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load data');
+    }
+  }
+  Future<Order> create() async {
+    final String id =
+    await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final response = await http.get(
+      Uri.parse('https://ktf-backend.herokuapp.com/payment/order'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+    );
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print(response.statusCode);
+      print(response.body);
+      return Order.fromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -91,16 +126,174 @@ class _cartState extends State<cart> {
     if (response.statusCode == 200) {
       Fluttertoast.showToast(
           msg: "Deleted",
-          toastLength: Toast.LENGTH_SHORT);
-      print(response.body);
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
       return eve.fromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a "200 OK response",
       // then throw an exception.
-      print(response.statusCode);
-      print(response.body);
-      throw Exception('Failed to delete album.');
+      Fluttertoast.showToast(
+          msg: "Failed to Delete",
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+
+      throw Exception('Failed to delete event.');
     }
+  }
+  Future<eve>addcoup(String cid)async{
+    final String id =
+    await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final http.Response response = await http.post(
+      Uri.parse('https://ktf-backend.herokuapp.com/cart/add-coupon'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+      body: jsonEncode(<String,String>{
+        "coupon":cid,
+      }),
+    );
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg:
+          response.body.substring(12,response.body.length-2),
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      fetchDat();
+      return eve.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a "200 OK response",
+      // then throw an exception.
+      Fluttertoast.showToast(
+          msg:
+          response.body.substring(30,response.body.length-2),
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      fetchDat();
+      throw Exception('Failed to add coupon.');
+    }
+  }
+  Future verify(String oid,String rpid,String rpsg)async{
+    final String id =
+    await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final http.Response response = await http.post(
+      Uri.parse('https://ktf-backend.herokuapp.com/payment/verify'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+      body: jsonEncode(<String,String>{
+        "orderID": oid,
+        "razorpayPaymentID": rpid,
+        "razorpaySignature": rpsg,
+      }),
+    );
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg:
+          response.body,
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      fetchDat();
+      return eve.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a "200 OK response",
+      // then throw an exception.
+      Fluttertoast.showToast(
+          msg:
+          response.body,
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      fetchDat();
+      throw Exception('Failed to add coupon.');
+    }
+  }
+  Future<eve>remcoup()async{
+    final String id =
+    await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final http.Response response = await http.get(
+      Uri.parse('https://ktf-backend.herokuapp.com/cart/remove-coupon'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+    );
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg:
+          response.body.substring(12,response.body.length-2),
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      return eve.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a "200 OK response",
+      // then throw an exception.
+      Fluttertoast.showToast(
+          msg:
+          response.body,
+          toastLength: Toast
+              .LENGTH_LONG,
+          gravity:
+          ToastGravity.SNACKBAR,
+          fontSize: 17,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      throw Exception('Failed to remove coupon.');
+    }
+  }
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.black54,
+      content: Row(
+        children: [
+          const CircularProgressIndicator(
+            color: Colors.white,
+          ),
+          Container(
+              margin: const EdgeInsets.only(left: 17),
+              child: Text(
+                "Creating Order...",
+                style: GoogleFonts.sora(
+                  color: Colors.white,
+                ),
+              )),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
   Future<bool> _onWillPop() async {
     return (await showDialog(
@@ -164,8 +357,10 @@ class _cartState extends State<cart> {
                           final merchas = snapshot.data!.iob;
                           //print(merchas[0].containsValue("Event-2"));
                           return ListView.builder(
+                            itemCount: merchas.isEmpty?merchas.length:1,
                             itemBuilder: (context, index) {
-                              return merchas[index].containsValue("event")
+                              return merchas.isNotEmpty?
+                                merchas[index].containsValue("event")
                                   ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: //GlassContainer.frostedGlass(
@@ -173,7 +368,7 @@ class _cartState extends State<cart> {
                                   height: 90,
                                   width: 50,
                                   decoration: const BoxDecoration(
-                                    color: Color(0xffF1b1b1b),
+                                    color: Color(0xfff1b1b1b),
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(20.0),
                                     ),
@@ -238,7 +433,7 @@ class _cartState extends State<cart> {
                                         height: 90,
                                         width: 50,
                                         decoration: const BoxDecoration(
-                                          color: Color(0xffF1b1b1b),
+                                          color: Color(0xfff1b1b1b),
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(20.0),
                                           ),
@@ -306,15 +501,15 @@ class _cartState extends State<cart> {
                                           ],
                                         ),
                                       ),
-                                    );
+                                    ):
+                                   Center(child: Text("Nothing to show",style: GoogleFonts.sora(color: Colors.white),));
                             },
-                            itemCount: merchas.length,
+
                           );
                         } else if (snapshot.hasError) {
                           //print('${snapshot.error}');
                           return const Text('Error Connecting to Servers');
-                        }
-                        // By default, show a loading spinner.
+                        }// By default, show a loading spinner.
                         return const CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 1,
@@ -338,9 +533,7 @@ class _cartState extends State<cart> {
                     future: futureeve,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        final merchas =
-                            snapshot.data!.iob as List<Map<String, dynamic>>;
-                        print(merchas[0].containsValue("Event-2"));
+                        //print(merchas[0].containsValue("Event-2"));
                         amt = snapshot.data!.price;
                         return Text(
                           "${snapshot.data!.price}/-",
@@ -361,50 +554,80 @@ class _cartState extends State<cart> {
                   ),
                 ],
               ),
-              Center(
-                child: SizedBox(
-                  height: h(0.2),
-                  width: w(0.8),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    color: HexColor("#1B1B1B"),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Coupon Code",
-                            style: GoogleFonts.sora(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white),
+              FutureBuilder(
+                future: futureeve,
+                builder: (BuildContext context, AsyncSnapshot<eve> snapshot) {
+                  if (snapshot.hasData) {
+                    pno=snapshot.data!.pno;
+                    return snapshot.data!.cc?Center(child: Column(
+                      children: [
+                        Text("Coupon Already applied",style: GoogleFonts.sora(color: Colors.white,fontSize: 18),),
+                        MaterialButton(onPressed: (){
+                          remcoup();
+                        },color: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Remove Coupon",style: GoogleFonts.sora(color: Colors.black,fontSize: 14),),)
+                      ],
+                    )):
+                    Center(
+                      child: SizedBox(
+                        height: h(0.2),
+                        width: w(0.8),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(5)),
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            padding: const EdgeInsets.only(left: 4),
-                            child: TextFormField(
-                              style: const TextStyle(
-                                  fontSize: 18, color: Colors.white),
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Enter Your Coupon Code",
-                                  hintStyle: TextStyle(color: Colors.grey[700])),
-                              onChanged: (value) {},
+                          color: HexColor("#1B1B1B"),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Coupon Code",
+                                  style: GoogleFonts.sora(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.white),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  height: MediaQuery.of(context).size.height * 0.06,
+                                  width: MediaQuery.of(context).size.width * 0.9,
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: TextFormField(
+                                    style: const TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "Enter Your Coupon Code",
+                                        hintStyle: TextStyle(color: Colors.grey[700])),
+                                    onChanged: (value) {
+                                      coupon=value;
+                                    },
+                                  ),
+                                ),
+                                MaterialButton(onPressed: (){
+                                  addcoup(coupon);
+                                },color: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Add Coupon",style: GoogleFonts.sora(color: Colors.black,fontSize: 14),),)
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                    );
+                  } else if (snapshot.hasError) {
+                    print('${snapshot.error}');
+                    return const Text('snapshot.error');
+                  }
+
+                  // By default, show a loading spinner.
+                  return const CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 1,
+                  );
+                },
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(20, 5, 20,5),
@@ -418,7 +641,18 @@ class _cartState extends State<cart> {
                     });
                   },
                   onSwipeRight: () {
-                    openCheckout(amt);
+
+                    Fluttertoast.showToast(
+                        msg: "Creating Order, Hold Tight",
+                        toastLength: Toast.LENGTH_SHORT,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black);
+                    create().then((value) => {
+                      amt=value.amt,
+                      curr=value.curr,
+                      oid=value.oid,
+                    }
+                    ).whenComplete(() => openCheckout(amt, oid, curr));
                     setState(() {
                       rightSelected = false;
                       leftSelected = true;
@@ -476,6 +710,7 @@ class _cartState extends State<cart> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     futureeve = fetchDat();
+    email=FirebaseAuth.instance.currentUser!.email!;
   }
 
   @override
@@ -484,17 +719,19 @@ class _cartState extends State<cart> {
     _razorpay.clear();
   }
 
-  void openCheckout(int price) async {
+  void openCheckout(int price,String oid,String curr) async {
     var options = {
       'key': 'rzp_test_sF5XHMKvwK6fR1',
-      'amount': price * 100,
+      'amount':price,
+      'currency':curr,
+      'orderID':oid,
       'name': 'KTF',
       'description': 'Event Fee',
       'retry': {'enabled': true, 'max_count': 1},
       'send_sms_hash': true,
       'prefill': {
-        'contact': '9172420601',
-        'email': 'upadhyay.prashant001@gmail.com'
+        'contact': pno,
+        'email': email,
       },
       'external': {
         'wallets': ['paytm']
@@ -508,23 +745,31 @@ class _cartState extends State<cart> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    verify(response.orderId.toString(), response.paymentId.toString(), response.signature.toString());
     print('Success Response: ${response.paymentId!} ${response.orderId!}');
-    Fluttertoast.showToast(
+    /*Fluttertoast.showToast(
         msg: "SUCCESS: ${response.paymentId!}",
-        toastLength: Toast.LENGTH_SHORT);
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.white,
+        textColor: Colors.black);*/
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     print('Error Response: $response');
     Fluttertoast.showToast(
-        msg: "ERROR: ${response.code} - ${response.message!}",
-        toastLength: Toast.LENGTH_SHORT);
+        msg: "Error in Payment, please retry or contact us",
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.white,
+      textColor: Colors.black
+    );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     print('External SDK Response: $response');
     Fluttertoast.showToast(
         msg: "EXTERNAL_WALLET: ${response.walletName!}",
-        toastLength: Toast.LENGTH_SHORT);
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.white,
+        textColor: Colors.black);
   }
 }

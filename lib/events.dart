@@ -534,7 +534,7 @@ class _EventsState extends State<Events> {
                                                         onTap: () {
                                                           //print("EID is ${_events[position]['eid']}");
                                                           cartadd(events[position]
-                                                                      ['eid'])
+                                                                      ['eid']).then((value) => const CircularProgressIndicator())
                                                               .whenComplete(() =>
                                                                   Navigator.pop(
                                                                       context));

@@ -341,7 +341,7 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.adb_outlined,
+                      Icons.info,
                       color: Colors.white,
                     ),
                     SizedBox(width: 20,),
@@ -363,7 +363,7 @@ class _HomeState extends State<Home> {
                     child: Row(
                       children: [
                         Icon(
-                          Icons.account_circle,
+                          Icons.contact_support,
                           color: Colors.white,
                         ),
                         SizedBox(width: 20,),
@@ -385,7 +385,7 @@ class _HomeState extends State<Home> {
                     child: Row(
                       children: [
                         Icon(
-                          Icons.add_box_outlined,
+                          Icons.feedback,
                           color: Colors.white,
                         ),
                         SizedBox(width: 20,),
