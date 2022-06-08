@@ -130,7 +130,20 @@ Widget carousel(String image, String name, String details) {
     ),
   );
 }
+class Prof {
+  final String qr;
 
+  const Prof({
+    required this.qr,
+  });
+
+  factory Prof.fromJson(Map<String, dynamic> json) {
+    return Prof(
+      qr: json['qrCodeUrl'],
+
+    );
+  }
+}
 class _HomeState extends State<Home> {
   List<Widget> carouselWidget = [car, car2];
   addToCarousel(Widget carousel) {
@@ -206,10 +219,6 @@ class _HomeState extends State<Home> {
                               version: QrVersions.auto,
                               size: 150,
                               gapless: false,
-                              embeddedImage: AssetImage('assets/msc logo.png'),
-                              embeddedImageStyle: QrEmbeddedImageStyle(
-                                size: Size(60, 60),
-                              ),
                             ),
                           ),
                         ),
