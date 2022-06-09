@@ -9,6 +9,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:ktf/cart.dart';
 import 'package:ktf/events.dart';
 import 'package:ktf/merch.dart';
+import 'package:ktf/orders.dart';
 import 'package:ktf/profile.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:async';
@@ -794,7 +795,7 @@ class _HomeState extends State<Home> {
                                         BorderRadius.circular(60)),
                                     child: InkWell(
                                       onTap: () {
-
+                                        Navigator.push(context,MaterialPageRoute(builder:(BuildContext bs)=>Orders()));
                                       },
                                       child: Center(
                                         child: Text(

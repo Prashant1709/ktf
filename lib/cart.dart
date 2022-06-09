@@ -68,6 +68,7 @@ class _cartState extends State<cart> {
   int pno = 0;
   String em = "";
   String coupon="";
+  String name="";
   late Future<eve> futureeve;
   Future<eve> fetchDat() async {
     final String id =
@@ -201,9 +202,10 @@ class _cartState extends State<cart> {
       }),
     );
     if (response.statusCode == 200) {
+
       Fluttertoast.showToast(
           msg:
-          response.body,
+          response.body.substring(12,response.body.length-2),
           toastLength: Toast
               .LENGTH_LONG,
           gravity:
@@ -211,8 +213,9 @@ class _cartState extends State<cart> {
           fontSize: 17,
           backgroundColor: Colors.white,
           textColor: Colors.black);
-      fetchDat();
-      return eve.fromJson(jsonDecode(response.body));
+      Navigator.pop(context);
+      print(response.body);
+      throw Exception("Payment succeeded");
     } else {
       // If the server did not return a "200 OK response",
       // then throw an exception.
@@ -226,8 +229,9 @@ class _cartState extends State<cart> {
           fontSize: 17,
           backgroundColor: Colors.white,
           textColor: Colors.black);
-      fetchDat();
-      throw Exception('Failed to add coupon.');
+      print(response.body);
+      print(response.statusCode);
+      throw Exception('Failed to process payment');
     }
   }
   Future<eve>remcoup()async{
@@ -357,7 +361,7 @@ class _cartState extends State<cart> {
                           final merchas = snapshot.data!.iob;
                           //print(merchas[0].containsValue("Event-2"));
                           return ListView.builder(
-                            itemCount: merchas.isEmpty?merchas.length:1,
+                            itemCount: merchas.length,
                             itemBuilder: (context, index) {
                               return merchas.isNotEmpty?
                                 merchas[index].containsValue("event")
@@ -559,6 +563,7 @@ class _cartState extends State<cart> {
                 builder: (BuildContext context, AsyncSnapshot<eve> snapshot) {
                   if (snapshot.hasData) {
                     pno=snapshot.data!.pno;
+                    name=FirebaseAuth.instance.currentUser!.displayName!;
                     return snapshot.data!.cc?Center(child: Column(
                       children: [
                         Text("Coupon Already applied",style: GoogleFonts.sora(color: Colors.white,fontSize: 18),),
@@ -651,6 +656,9 @@ class _cartState extends State<cart> {
                       amt=value.amt,
                       curr=value.curr,
                       oid=value.oid,
+                      print(oid),
+                      print(amt),
+                      print(curr),
                     }
                     ).whenComplete(() => openCheckout(amt, oid, curr));
                     setState(() {
@@ -721,20 +729,27 @@ class _cartState extends State<cart> {
 
   void openCheckout(int price,String oid,String curr) async {
     var options = {
-      'key': 'rzp_test_sF5XHMKvwK6fR1',
+      'key': 'rzp_test_3xjSoMdzjlzbfn',
       'amount':price,
       'currency':curr,
-      'orderID':oid,
+      'order_id':oid,
       'name': 'KTF',
+      'image':"https://ecommercenews.eu/wp-content/uploads/2013/06/most_common_payment_methods_in_europe.png",
       'description': 'Event Fee',
       'retry': {'enabled': true, 'max_count': 1},
       'send_sms_hash': true,
       'prefill': {
+        'name':name,
         'contact': pno,
         'email': email,
       },
       'external': {
         'wallets': ['paytm']
+      },"notes": {
+        "address": "Razorpay Corporate Office"
+      },
+      "theme": {
+        "color": "#F37254"
       }
     };
     try {
@@ -745,8 +760,8 @@ class _cartState extends State<cart> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    print('Success : ${response.paymentId} ${response.orderId} ${response.signature}');
     verify(response.orderId.toString(), response.paymentId.toString(), response.signature.toString());
-    print('Success Response: ${response.paymentId!} ${response.orderId!}');
     /*Fluttertoast.showToast(
         msg: "SUCCESS: ${response.paymentId!}",
         toastLength: Toast.LENGTH_SHORT,
@@ -762,6 +777,7 @@ class _cartState extends State<cart> {
         backgroundColor: Colors.white,
       textColor: Colors.black
     );
+    Navigator.pop(context);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
@@ -771,5 +787,6 @@ class _cartState extends State<cart> {
         toastLength: Toast.LENGTH_SHORT,
         backgroundColor: Colors.white,
         textColor: Colors.black);
+    Navigator.pop(context);
   }
 }
