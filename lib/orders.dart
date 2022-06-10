@@ -58,7 +58,7 @@ class _OrdersState extends State<Orders> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: DefaultTabController(
-      length: 2,
+      length: 1,
       child: Scaffold(
         appBar: AppBar(
         title: Text("Your Orders",style: GoogleFonts.sora(color: Colors.white,fontSize: 16),),
@@ -70,9 +70,6 @@ class _OrdersState extends State<Orders> {
               Tab(
                 child: Text("Events"),
               ),
-              Tab(
-                child: Text("Merchs"),
-              ),
             ],
             indicatorColor: Colors.white,
           ),
@@ -81,37 +78,6 @@ class _OrdersState extends State<Orders> {
         body: SafeArea(
           child: TabBarView(
             children:[
-              SingleChildScrollView(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Center(
-                    child: FutureBuilder<Ord>(
-                      future: futureeve,
-                      builder: (context,snapshot){
-                        if(snapshot.hasData){
-                          final merchas = snapshot.data!.iob;
-                          return ListView.builder(
-                              itemCount: merchas.length,
-                              itemBuilder: (context, index){
-                                return merchas.isNotEmpty?ListTile(
-                                  title: Text("${merchas[index]['name']}"),
-                                  tileColor: Colors.white,
-                                ):Center(child: Text("Nothing to show",style: GoogleFonts.sora(color: Colors.white),));
-                              });
-                        }
-                        else if (snapshot.hasError) {
-                          //print('${snapshot.error}');
-                          return const Text('Error Connecting to Servers');
-                        }// By default, show a loading spinner.
-                        return const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 1,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
               SingleChildScrollView(
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.8,

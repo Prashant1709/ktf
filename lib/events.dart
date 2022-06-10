@@ -123,8 +123,7 @@ class _EventsState extends State<Events> {
       print(response.statusCode);
       print(response.body);
       Fluttertoast.showToast(
-          msg:
-          "Already in Card, can't be added again!",
+          msg:response.body.substring(12,response.body.length-2),
           toastLength: Toast
               .LENGTH_LONG,
           gravity:
@@ -287,7 +286,8 @@ class _EventsState extends State<Events> {
         ],
       ),
       backgroundColor: Colors.black,
-      body: SingleChildScrollView(
+      body: Padding(
+        padding:const EdgeInsets.only(top: 15.0),
         child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.8,
           child: FutureBuilder(
@@ -305,366 +305,365 @@ class _EventsState extends State<Events> {
 
                     return ListView.builder(
                       itemBuilder: (context, position) {
-                        return Flexible(
-                            child: Card(
+                        return Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
+                        borderRadius: BorderRadius.circular(15.0),
                           ),
                           color: HexColor("#1B1B1B"),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: AutoSizeText(
-                                      "${events[position]['name']}",
-                                      style: GoogleFonts.sora(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 21),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: AutoSizeText(
-                                      "${events[position]['desc']}",
-                                      style: GoogleFonts.sora(
-                                          color: Colors.white, fontSize: 13),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        showModalBottomSheet(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(28.0),
-                                            ),
-                                            backgroundColor: Colors.black,
-                                            isScrollControlled: true,
-                                            context: context,
-                                            builder: (BuildContext bc) {
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: AutoSizeText(
+                                  "${events[position]['name']}",
+                                  style: GoogleFonts.sora(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 21),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: AutoSizeText(
+                                  "${events[position]['desc']}",
+                                  style: GoogleFonts.sora(
+                                      color: Colors.white, fontSize: 13),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(28.0),
+                                        ),
+                                        backgroundColor: Colors.black,
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (BuildContext bc) {
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Stack(
+                                                fit: StackFit.passthrough,
                                                 children: [
-                                                  Stack(
-                                                    fit: StackFit.passthrough,
-                                                    children: [
-                                                      Container(
-                                                        width: w(1),
-                                                        height: h(0.47),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(28),
-                                                          color: const Color(
-                                                              0xff2cb67d),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                          top: 35,
-                                                          right: 5,
-                                                          child: IconButton(
-                                                              onPressed: () {},
-                                                              icon: const Icon(
-                                                                Icons.favorite,
-                                                                color:
-                                                                    Colors.red,
-                                                              ))),
-                                                      Positioned(
-                                                          top: 35,
-                                                          left: 5,
-                                                          child: IconButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              icon: const Icon(
-                                                                Icons
-                                                                    .arrow_back,
-                                                                color: Colors
-                                                                    .black,
-                                                              ))),
-                                                      Positioned(
-                                                          top: 100,
-                                                          right: 70,
-                                                          left: 70,
-                                                          child: Image.asset(
-                                                              "assets/img.png")),
-                                                      Positioned(
-                                                          top: 280,
-                                                          right: 40,
-                                                          left: 40,
-                                                          child: Card(
-                                                            color: Colors.white,
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceEvenly,
+                                                  Container(
+                                                    width: w(1),
+                                                    height: h(0.47),
+                                                    decoration:
+                                                        BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius
+                                                              .circular(28),
+                                                      color: const Color(
+                                                          0xff2cb67d),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                      top: 35,
+                                                      right: 5,
+                                                      child: IconButton(
+                                                          onPressed: () {},
+                                                          icon: const Icon(
+                                                            Icons.favorite,
+                                                            color:
+                                                                Colors.red,
+                                                          ))),
+                                                  Positioned(
+                                                      top: 35,
+                                                      left: 5,
+                                                      child: IconButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          icon: const Icon(
+                                                            Icons
+                                                                .arrow_back,
+                                                            color: Colors
+                                                                .black,
+                                                          ))),
+                                                  Positioned(
+                                                      top: 100,
+                                                      right: 70,
+                                                      left: 70,
+                                                      child: Image.asset(
+                                                          "assets/img.png")),
+                                                  Positioned(
+                                                      top: 280,
+                                                      right: 40,
+                                                      left: 40,
+                                                      child: Card(
+                                                        color: Colors.white,
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            const Icon(
+                                                              Icons.people,
+                                                              color: Colors
+                                                                  .black,
+                                                            ),
+                                                            Column(
                                                               children: [
-                                                                const Icon(
-                                                                  Icons.people,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                                Column(
-                                                                  children: [
-                                                                    AutoSizeText(
-                                                                      "40+",
-                                                                      style: GoogleFonts
-                                                                          .sora(
-                                                                        fontSize:
-                                                                            16,
-                                                                      ),
-                                                                    ),
-                                                                    AutoSizeText(
-                                                                      "People",
-                                                                      style: GoogleFonts
-                                                                          .sora(
-                                                                        fontSize:
-                                                                            12,
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          8.0),
-                                                                  child:
-                                                                      SizedBox(
-                                                                    height: 60,
-                                                                    width: 60,
-                                                                    child:
-                                                                        Stack(
-                                                                      children: <
-                                                                          Widget>[
-                                                                        const Center(
-                                                                          child:
-                                                                              SizedBox(
-                                                                            width:
-                                                                                60,
-                                                                            height:
-                                                                                60,
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                              strokeWidth: 5,
-                                                                              value: 0.6,
-                                                                              backgroundColor: Colors.grey,
-                                                                              color: Color.fromRGBO(79, 9, 29, 1),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        Center(
-                                                                            child:
-                                                                                Row(
-                                                                          children: const [
-                                                                            Text(
-                                                                              "\t\t60%",
-                                                                              textAlign: TextAlign.center,
-                                                                              style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
-                                                                            ),
-                                                                          ],
-                                                                        )),
-                                                                      ],
-                                                                    ),
+                                                                AutoSizeText(
+                                                                  "40+",
+                                                                  style: GoogleFonts
+                                                                      .sora(
+                                                                    fontSize:
+                                                                        16,
                                                                   ),
                                                                 ),
-                                                                CircularCountDownTimer(
-                                                                  width: 60,
-                                                                  height: 60,
-                                                                  duration:
-                                                                      duration,
-                                                                  fillColor:
-                                                                      Colors
-                                                                          .grey,
-                                                                  ringColor:
-                                                                      Colors
-                                                                          .green,
-                                                                  textStyle: const TextStyle(
-                                                                      fontSize:
-                                                                          20,
-                                                                      fontStyle:
-                                                                          FontStyle
-                                                                              .italic,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
+                                                                AutoSizeText(
+                                                                  "People",
+                                                                  style: GoogleFonts
+                                                                      .sora(
+                                                                    fontSize:
+                                                                        12,
+                                                                  ),
                                                                 )
                                                               ],
                                                             ),
-                                                          )),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: h(0.05),
-                                                  ),
-                                                  AutoSizeText(
-                                                    "About Event",
-                                                    style: GoogleFonts.sora(
-                                                        fontSize: 17,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  AutoSizeText(
-                                                    "${events[position]['desc']}",
-                                                    style: GoogleFonts.sora(
-                                                      fontSize: 13,
-                                                      color: Colors.white,
-                                                    ),
-                                                    maxLines: 8,
-                                                  ),
-                                                  SizedBox(
-                                                    height: h(0.1),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      InkWell(
-                                                        onTap: () {
-                                                          //print("EID is ${_events[position]['eid']}");
-                                                          cartadd(events[position]
-                                                                      ['eid']).then((value) => const CircularProgressIndicator())
-                                                              .whenComplete(() =>
-                                                                  Navigator.pop(
-                                                                      context));
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .all(
+                                                                      8.0),
+                                                              child:
+                                                                  SizedBox(
+                                                                height: 60,
+                                                                width: 60,
+                                                                child:
+                                                                    Stack(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    const Center(
+                                                                      child:
+                                                                          SizedBox(
+                                                                        width:
+                                                                            60,
+                                                                        height:
+                                                                            60,
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                          strokeWidth: 5,
+                                                                          value: 0.6,
+                                                                          backgroundColor: Colors.grey,
+                                                                          color: Color.fromRGBO(79, 9, 29, 1),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Center(
+                                                                        child:
+                                                                            Row(
+                                                                      children: const [
+                                                                        Text(
+                                                                          "\t\t60%",
+                                                                          textAlign: TextAlign.center,
+                                                                          style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                      ],
+                                                                    )),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            CircularCountDownTimer(
+                                                              width: 60,
+                                                              height: 60,
+                                                              duration:
+                                                                  duration,
+                                                              fillColor:
+                                                                  Colors
+                                                                      .grey,
+                                                              ringColor:
+                                                                  Colors
+                                                                      .green,
+                                                              textStyle: const TextStyle(
+                                                                  fontSize:
+                                                                      20,
+                                                                  fontStyle:
+                                                                      FontStyle
+                                                                          .italic,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: h(0.05),
+                                              ),
+                                              AutoSizeText(
+                                                "About Event",
+                                                style: GoogleFonts.sora(
+                                                    fontSize: 17,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              AutoSizeText(
+                                                "${events[position]['desc']}",
+                                                style: GoogleFonts.sora(
+                                                  fontSize: 13,
+                                                  color: Colors.white,
+                                                ),
+                                                maxLines: 8,
+                                              ),
+                                              SizedBox(
+                                                height: h(0.1),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  InkWell(
+                                                    onTap: () {
+                                                      //print("EID is ${_events[position]['eid']}");
+                                                      cartadd(events[position]
+                                                                  ['eid']).then((value) => const CircularProgressIndicator())
+                                                          .whenComplete(() =>
+                                                              Navigator.pop(
+                                                                  context));
 
-                                                        },
-                                                        child: Container(
-                                                          height: h(0.06),
-                                                          width: h(0.4),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            gradient:
-                                                                LinearGradient(
-                                                                    colors: [
-                                                                  HexColor(
-                                                                      "#7F5AF0"),
-                                                                  HexColor(
-                                                                      "#481DCB"),
-                                                                ]),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                          ),
-                                                          child: Center(
-                                                            child: Text(
-                                                              "Add to Cart",
-                                                              style: GoogleFonts
-                                                                  .sora(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
+                                                    },
+                                                    child: Container(
+                                                      height: h(0.06),
+                                                      width: h(0.4),
+                                                      decoration:
+                                                          BoxDecoration(
+                                                        gradient:
+                                                            LinearGradient(
+                                                                colors: [
+                                                              HexColor(
+                                                                  "#7F5AF0"),
+                                                              HexColor(
+                                                                  "#481DCB"),
+                                                            ]),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    20),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Add to Cart",
+                                                          style: GoogleFonts
+                                                              .sora(
+                                                            color: Colors
+                                                                .white,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold,
                                                           ),
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: h(0.01),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      InkWell(
-                                                        onTap: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                          openCheckout(events[
-                                                                      position]
-                                                                  ['price'] *
-                                                              100);
-                                                        },
-                                                        child: Container(
-                                                          height: h(0.06),
-                                                          width: h(0.4),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            gradient:
-                                                                LinearGradient(
-                                                                    colors: [
-                                                                  HexColor(
-                                                                      "#ffffff"),
-                                                                  HexColor(
-                                                                      "#2CB67D"),
-                                                                ]),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                          ),
-                                                          child: Center(
-                                                            child: Text(
-                                                              "Buy Now",
-                                                              style: GoogleFonts
-                                                                  .sora(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ],
-                                              );
-                                            });
-                                      },
-                                      child: Container(
-                                        height: 30,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(colors: [
-                                            HexColor("#7F5AF0"),
-                                            HexColor("#481DCB"),
-                                          ]),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "${events[position]['price']}/-",
-                                            style: GoogleFonts.sora(
-                                              color: Colors.white,
-                                            ),
-                                          ),
+                                              ),
+                                              SizedBox(
+                                                height: h(0.01),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  InkWell(
+                                                    onTap: () {
+                                                      Navigator.pop(
+                                                          context);
+                                                      openCheckout(events[
+                                                                  position]
+                                                              ['price'] *
+                                                          100);
+                                                    },
+                                                    child: Container(
+                                                      height: h(0.06),
+                                                      width: h(0.4),
+                                                      decoration:
+                                                          BoxDecoration(
+                                                        gradient:
+                                                            LinearGradient(
+                                                                colors: [
+                                                              HexColor(
+                                                                  "#ffffff"),
+                                                              HexColor(
+                                                                  "#2CB67D"),
+                                                            ]),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    20),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Buy Now",
+                                                          style: GoogleFonts
+                                                              .sora(
+                                                            color: Colors
+                                                                .white,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    height: 30,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(colors: [
+                                        HexColor("#7F5AF0"),
+                                        HexColor("#481DCB"),
+                                      ]),
+                                      borderRadius:
+                                          BorderRadius.circular(20),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "${events[position]['price']}/-",
+                                        style: GoogleFonts.sora(
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                  height: 125,
-                                  width: 125,
-                                  child: Image(
-                                      image: AssetImage("assets/img.png")))
+                                  ),
+                                ),
+                              )
                             ],
                           ),
-                        ));
+                          const SizedBox(
+                              height: 125,
+                              width: 125,
+                              child: Image(
+                                  image: AssetImage("assets/img.png")))
+                        ],
+                          ),
+                        );
                       },
                       itemCount: events.length,
                     );

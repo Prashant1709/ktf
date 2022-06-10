@@ -13,10 +13,6 @@ import 'package:ktf/orders.dart';
 import 'package:ktf/profile.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -28,19 +24,17 @@ class Home extends StatefulWidget {
 
 
 List<String> sponsorLogoFileName = [
-  "dominos.png",
-  "dell.png",
-  "dominos.png",
-  "dell.png",
-  "dominos.png",
-  "dell.png",
+  "mslogo.jpg",
+  "Nvidia.png",
+  "rasp.png",
   "dominos.png",
   "dell.png"
 ];
 
 Widget car =
-    carousel("even_page.png", "Main Event Flashback", "Main Event FlashBack");
-Widget car2 = carousel("even_page.png", "Card 2", "Main FlashBack");
+    carousel("even_page.png", "Welcome Aboard", "We are glad you're here");
+Widget car2 = carousel("even_page.png", "Event-1", "I am event 1");
+Widget car3 = carousel("even_page.png", "Event-2", "I am event 2");
 
 Widget sponsorLogo(String image) {
   return Container(
@@ -70,7 +64,7 @@ Widget carousel(String image, String name, String details) {
           children: [
             Padding(
               padding: EdgeInsets.only(
-                  top: 20.0, left: 20, bottom: name.length <= 9 ? 20 : 13),
+                  top: 15.0, left: 20, bottom: name.length <= 9 ? 20 : 13),
               child: SizedBox(
                 width: 135,
                 child: AutoSizeText(
@@ -146,7 +140,7 @@ class Prof {
   }
 }
 class _HomeState extends State<Home> {
-  List<Widget> carouselWidget = [car, car2];
+  List<Widget> carouselWidget = [car, car2,car3];
   addToCarousel(Widget carousel) {
     carouselWidget.add(carousel);
   }
