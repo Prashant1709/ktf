@@ -273,6 +273,7 @@ class _logInState extends State<logIn> {
                           //print(e.message);
                         }
                       },color: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Login",style: GoogleFonts.sora(color: Colors.black,fontSize: 16),),),
+                      TextButton(onPressed: (){}, child: Text("Forgot Password",style: GoogleFonts.sora(color: Colors.white,fontSize: 15),)),
                       const Divider(color: Colors.grey,thickness: 1,indent: 10,endIndent: 10,),
                       Padding(
                         padding: const EdgeInsets.only(

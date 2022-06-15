@@ -89,7 +89,9 @@ Widget carousel(String image, String name, String details) {
             Padding(
               padding: const EdgeInsets.only(left: 15.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+
+                },
                 child: Container(
                   height: 30,
                   width: 100,
@@ -313,88 +315,247 @@ class _HomeState extends State<Home> {
               child: ListView(
                 //padding: const EdgeInsets.fromLTRB(0, 80, 0, 0),
                 children: [
-                  InkWell(
+                  SizedBox(height: 10,),
+                  OutlinedButton(
+                    onPressed: (){
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                          backgroundColor: Colors.black,
+                          context: context, builder: (BuildContext bs){
+                        return SingleChildScrollView(child: Column(
+                          children: [
+                              SizedBox(height: h(0.1)),
+
+                              SizedBox(
+                                height: 20,
+                              ),
+                              SizedBox(
+                                // height: 100,
+                                // width: 500,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: h(0.25),
+                                      child: Center(
+                                        child: Image.asset("assets/msc logo.png"),
+                                      ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      // ignore: prefer_const_literals_to_create_immutables
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 57.0),
+                                          child: Text(
+                                            "Microsoft",
+                                            style: TextStyle(
+                                                fontSize: 25,
+                                                color: Colors.teal,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Text(
+                                          "Student Community",
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.teal,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Padding(
+                                          padding:
+                                          EdgeInsets.only(left: 63.0),
+                                          child: Text(
+                                            "KiiT Chapter",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.teal,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: h(0.05),
+                              ),
+                              //Divider(color: Colors.blue, thickness: 2),
+                              Divider(color: Colors.white),
+
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(color: Color.fromARGB(246, 2, 105, 184),
+                                  elevation:10,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Text(
+                                        "Microsoft Learn Student Ambassadors are a global group of on-campus ambassadors sponsored by Microsoft who are eager to help fellow students, lead in their local tech community,and develop technical and career skills for the future. ",
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                                ),
+                              ),
+                              Divider(color: Colors.white),
+
+                              Center(
+                                  child: Text("Developer Team",
+                                      style: TextStyle(
+                                          color: Colors.cyan, fontSize: 30))),
+                              SizedBox(
+                                height: h(0.02),
+                              ),
+
+                              Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(60),
+                                      color: Color.fromARGB(246, 2, 105,
+                                          184)), //rgba(2, 105, 184, 1)
+                                  height: h(0.1),
+                                  width: w(0.85),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    children: [
+                                      //•
+
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 10),
+                                        child: Text("Prashant Upadhyay",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: [
+                                          // SizedBox(
+                                          //   width: width(0.18),
+                                          // ),
+                                          Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    top: 8.0),
+                                                child: Text(
+                                                    "• Backend   • UI/UX   • Debugging",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                    )),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  )),
+                              SizedBox(
+                                height: h(0.015),
+                              ),
+                          ],
+                        ));
+                      });
+                    },
                     child: Container(
                       height: 60,
-                      width: 1,
-                      padding: const EdgeInsets.fromLTRB(30,0,0,0),
-                      color: Colors.transparent,
-                      child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Icon(Icons.arrow_back_ios_rounded,color: Colors.white,)),
-                    ),
-                    onTap: ()
-                    {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext bs) => Home()));
-                    },
-                  ),
-                  SizedBox(height: 10,),
-                  Container(
-                    height: 60,
                 width: double.maxFinite,
                 padding: const EdgeInsets.all(10.0),
                 decoration: const BoxDecoration(
-                  color: Colors.tealAccent,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20.0),
-                  ),
+                    color: Colors.tealAccent,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20.0),
+                    ),
                 ),
                 child: Row(
-                  children: [
-                    Icon(
-                      Icons.info,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 20,),
-                    Text("About app ",style: TextStyle(color: Colors.white,fontSize: 20),),
-                  ],
+                    children: [
+                      Icon(
+                        Icons.info,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 20,),
+                      Text("About app ",style: TextStyle(color: Colors.white,fontSize: 20),),
+                    ],
                 ),
-                  ),
-                  SizedBox(height: 10,),
-                  Container(
-                    height: 60,
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      color: Color(0xffF1b1b1b),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.contact_support,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 20,),
-                        Text("Contact Us ",style: TextStyle(color: Colors.white,fontSize: 20),),
-                      ],
                     ),
                   ),
                   SizedBox(height: 10,),
-                  Container(
-                    height: 60,
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      color: Color(0xffF1b1b1b),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
+                  OutlinedButton(
+                    onPressed: (){
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.black,
+                          context: context, builder: (BuildContext bs){
+                        return Column(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Page in making",style: GoogleFonts.sora(color: Colors.white,fontSize: 32),)
+                        ],
+                        );
+                      });
+                    },
+                    child: Container(
+                      height: 60,
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: const BoxDecoration(
+                        color: Color(0xffF1b1b1b),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20.0),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.contact_support,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 20,),
+                          Text("Contact Us ",style: TextStyle(color: Colors.white,fontSize: 20),),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.feedback,
-                          color: Colors.white,
+                  ),
+                  SizedBox(height: 10,),
+                  OutlinedButton(
+                    onPressed: (){
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.black,
+                          context: context, builder: (BuildContext bs){
+                        return Column(mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Page in making",style: GoogleFonts.sora(color: Colors.white,fontSize: 32),)
+                          ],
+                        );
+                      });
+                    },
+                    child: Container(
+                      height: 60,
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: const BoxDecoration(
+                        color: Color(0xffF1b1b1b),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20.0),
                         ),
-                        SizedBox(width: 20,),
-                        Text("Help and Feedback ",style: TextStyle(color: Colors.white,fontSize: 20),),
-                      ],
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.feedback,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 20,),
+                          Text("Help and Feedback ",style: TextStyle(color: Colors.white,fontSize: 20),),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -429,7 +590,19 @@ class _HomeState extends State<Home> {
                         ),
                         child: carouselWidget[i],
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        if(i==1){
+                          showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.black,
+                              context: context, builder: (BuildContext bs){
+                            return Column();
+                          });
+                        }
+                        else{
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>Events()));
+                        }
+                      },
                     );
                   },
                 ),
