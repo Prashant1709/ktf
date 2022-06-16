@@ -13,6 +13,8 @@ import 'package:ktf/orders.dart';
 import 'package:ktf/profile.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:async';
+
+import 'package:ticket_widget/ticket_widget.dart';
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -200,30 +202,41 @@ class _HomeState extends State<Home> {
                 context: context,
                 builder: (BuildContext bs) => Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          height: h(0.3),
-                          width: w(0.65),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            //border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(20),
+                      children: [TicketWidget(
+                        height: h(0.6),
+                        width: w(0.9),
+                        isCornerRounded: true,
+                        padding: const EdgeInsets.all(20),
+                        color: Colors.teal,
+                        child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: h(0.3),
+                              width: w(0.65),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                //border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: QrImage(
+                                  data: FirebaseAuth.instance.currentUser!.uid,
+                                  version: QrVersions.auto,
+                                  size: 150,
+                                  gapless: false,
+                                ),
+                              ),
                             ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: QrImage(
-                              data: FirebaseAuth.instance.currentUser!.uid,
-                              version: QrVersions.auto,
-                              size: 150,
-                              gapless: false,
-                            ),
-                          ),
+                            Divider(color: Colors.white,thickness: 1,),
+                            AutoSizeText(
+                              "Your Digital Ticket",
+                              style: GoogleFonts.sora(
+                                  color: Colors.white, fontSize: 28),
+                            )
+                          ],
                         ),
-                        AutoSizeText(
-                          "Your Digital Ticket",
-                          style: GoogleFonts.sora(
-                              color: Colors.white, fontSize: 17),
-                        )
+                      ),
                       ],
                     ));
           },
