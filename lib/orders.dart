@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -90,15 +91,70 @@ class _OrdersState extends State<Orders> {
                           return ListView.builder(
                               itemCount: merchas.length,
                               itemBuilder: (context, index){
-                                return merchas.isNotEmpty?ListTile(
-                                  title: Text("${merchas[index]['name']}"),
-                                  tileColor: Colors.white,
+                                return merchas.isNotEmpty?Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: //GlassContainer.frostedGlass(
+                                  Container(
+                                    height: 90,
+                                    width: 50,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xfff1b1b1b),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20.0),
+                                      ),
+                                    ),
+                                    //borderColor: Colors.white,
+                                    child: OutlinedButton(onPressed: (){
+                                      showModalBottomSheet(isScrollControlled: true,backgroundColor: Colors.black54,context: context, builder: (BuildContext bs)=>Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Center(child: Text("Your Receipt will be available soon",style: GoogleFonts.sora(color: Colors.white,fontSize: 18),),)
+                                        ],
+                                      ));
+                                    },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(30, 10, 10, 0),
+
+                                            child: Column(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+
+                                                AutoSizeText(
+                                                  "${merchas[index]['name']}",
+                                                  style: GoogleFonts.sora(
+                                                      color: Colors.white,
+                                                      fontSize: 17),
+                                                ),
+                                                AutoSizeText(
+                                                  "Date: ${merchas[index]['eventDate']}",
+                                                  style: GoogleFonts.sora(
+                                                      color: Colors.white,
+                                                      fontSize: 17),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(0, 5, 30, 5),
+                                            child: merchas[index]['checkedIn']?CircleAvatar(backgroundColor: Colors.green.shade300,radius: 7,):CircleAvatar(radius: 7,backgroundColor: Colors.red.shade700,)
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ):Center(child: Text("Nothing to show",style: GoogleFonts.sora(color: Colors.white),));
                               });
                         }
                         else if (snapshot.hasError) {
                           //print('${snapshot.error}');
-                          return const Text('Error Connecting to Servers');
+                          return Text('Error Connecting to Servers',style: GoogleFonts.sora(color: Colors.white,fontSize: 17),);
                         }// By default, show a loading spinner.
                         return const CircularProgressIndicator(
                           color: Colors.white,

@@ -11,7 +11,6 @@ import 'package:ktf/profile.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class Events extends StatefulWidget {
   const Events({Key? key}) : super(key: key);
@@ -49,7 +48,6 @@ class Eve {
 
 class _EventsState extends State<Events> {
   final int duration = 10;
-  late Razorpay _razorpay;
   late List<Map<String, dynamic>> eventd;
   Future<List<Map<String, dynamic>>> fetchDat() async {
     List<Map<String, dynamic>> _events = [];
@@ -144,60 +142,6 @@ class _EventsState extends State<Events> {
     Future.delayed(const Duration(seconds: 0)).then((e) async {
       eventd = await fetchDat();
     });
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _razorpay.clear();
-  }
-
-  void openCheckout(int price) async {
-    var options = {
-      'key': 'rzp_test_sF5XHMKvwK6fR1',
-      'amount': price,
-      'name': 'KTF',
-      'description': 'Event Fee',
-      'retry': {'enabled': true, 'max_count': 1},
-      'send_sms_hash': true,
-      'prefill': {
-        'contact': '9172420601',
-        'email': 'upadhyay.prashant001@gmail.com'
-      },
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: $e');
-    }
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print('Success Response: ${response.paymentId!} ${response.orderId!}');
-    Fluttertoast.showToast(
-        msg: "SUCCESS: ${response.paymentId!}",
-        toastLength: Toast.LENGTH_SHORT);
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    print('Error Response: $response');
-    Fluttertoast.showToast(
-        msg: "ERROR: ${response.code} - ${response.message!}",
-        toastLength: Toast.LENGTH_SHORT);
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    print('External SDK Response: $response');
-    Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: ${response.walletName!}",
-        toastLength: Toast.LENGTH_SHORT);
   }
 
   @override
@@ -587,10 +531,9 @@ class _EventsState extends State<Events> {
                                                     onTap: () {
                                                       Navigator.pop(
                                                           context);
-                                                      openCheckout(events[
-                                                                  position]
-                                                              ['price'] *
-                                                          100);
+                                                      cartadd(events[position]
+                                                      ['eid']).then((value) => const CircularProgressIndicator())
+                                                          .whenComplete(() =>Navigator.push(context, MaterialPageRoute(builder: (BuildContext bs)=>const cart())));
                                                     },
                                                     child: Container(
                                                       height: h(0.06),

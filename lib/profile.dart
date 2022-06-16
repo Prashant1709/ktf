@@ -136,62 +136,7 @@ class _ProfileState extends State<Profile> {
                 maxLines: 1,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 40.0, left: 10, right: 10),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () {},
-                child: Container(
-                  width: w(1),
-                  height: h(0.07),
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 29, 28, 28),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Notification",
-                        style: GoogleFonts.sora(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 10.0, left: 10, right: 10),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () {},
-                child: Container(
-                  width: w(1),
-                  height: h(0.07),
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 29, 28, 28),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Wishlist",
-                        style: GoogleFonts.sora(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+
             Padding(
               padding: EdgeInsets.only(top: 70.0, left: 15),
               child: Row(

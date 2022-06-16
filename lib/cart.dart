@@ -103,14 +103,14 @@ class _cartState extends State<cart> {
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
-      print(response.statusCode);
-      print(response.body);
+      //print(response.statusCode);
+      //print(response.body);
       return Order.fromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      print(response.statusCode);
-      print(response.body);
+      //print(response.statusCode);
+      //print(response.body);
       throw Exception('Failed to load data');
     }
   }
@@ -167,7 +167,6 @@ class _cartState extends State<cart> {
           fontSize: 17,
           backgroundColor: Colors.white,
           textColor: Colors.black);
-      fetchDat();
       return eve.fromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a "200 OK response",
@@ -182,7 +181,6 @@ class _cartState extends State<cart> {
           fontSize: 17,
           backgroundColor: Colors.white,
           textColor: Colors.black);
-      fetchDat();
       throw Exception('Failed to add coupon.');
     }
   }
@@ -272,7 +270,7 @@ class _cartState extends State<cart> {
       throw Exception('Failed to remove coupon.');
     }
   }
-  showLoaderDialog(BuildContext context) {
+  showLoaderDialog(BuildContext context,String payload) {
     AlertDialog alert = AlertDialog(
       backgroundColor: Colors.black54,
       content: Row(
@@ -283,7 +281,7 @@ class _cartState extends State<cart> {
           Container(
               margin: const EdgeInsets.only(left: 17),
               child: Text(
-                "Creating Order...",
+                "$payload...",
                 style: GoogleFonts.sora(
                   color: Colors.white,
                 ),
@@ -434,7 +432,7 @@ class _cartState extends State<cart> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: //GlassContainer.frostedGlass(
                                       Container(
-                                        height: 90,
+                                        height: 110,
                                         width: 50,
                                         decoration: const BoxDecoration(
                                           color: Color(0xfff1b1b1b),
@@ -463,6 +461,19 @@ class _cartState extends State<cart> {
                                                         color: Colors.white,
                                                         fontSize: 17),
                                                   ),
+                                                  Row(children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.fromLTRB(0,5, 8, 0),
+                                                      child: Text("Qty: ${merchas[index]['quantity']}",                                                    style: GoogleFonts.sora(
+                                                          color: Colors.white,
+                                                          fontSize: 15),
+                                                      ),
+                                                    ),
+                                                    Text("Size: ${merchas[index]['merchSize']}",                                                    style: GoogleFonts.sora(
+                                                        color: Colors.white,
+                                                        fontSize: 15),
+                                                    ),
+                                                  ],),
                                                   Row(
                                                     children: [
                                                       IconButton(
@@ -568,7 +579,11 @@ class _cartState extends State<cart> {
                       children: [
                         Text("Coupon Already applied",style: GoogleFonts.sora(color: Colors.white,fontSize: 18),),
                         MaterialButton(onPressed: (){
-                          remcoup();
+                          remcoup().whenComplete(() => Navigator.pushReplacement(context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>const cart()
+                              )
+                          ));
                         },color: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Remove Coupon",style: GoogleFonts.sora(color: Colors.black,fontSize: 14),),)
                       ],
                     )):
@@ -614,7 +629,11 @@ class _cartState extends State<cart> {
                                   ),
                                 ),
                                 MaterialButton(onPressed: (){
-                                  addcoup(coupon);
+                                  addcoup(coupon).whenComplete(() => Navigator.pushReplacement(context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>const cart()
+                                      )
+                                  ));
                                 },color: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Text("Add Coupon",style: GoogleFonts.sora(color: Colors.black,fontSize: 14),),)
                               ],
                             ),
@@ -648,9 +667,10 @@ class _cartState extends State<cart> {
                   onSwipeRight: () {
 
                     Fluttertoast.showToast(
-                        msg: "Creating Order, Hold Tight",
+                        msg: "Creating Order, Hold Tight...",
                         toastLength: Toast.LENGTH_SHORT,
                         backgroundColor: Colors.white,
+                        gravity: ToastGravity.CENTER,
                         textColor: Colors.black);
                     create().then((value) => {
                       amt=value.amt,
@@ -761,7 +781,8 @@ class _cartState extends State<cart> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     print('Success : ${response.paymentId} ${response.orderId} ${response.signature}');
-    verify(response.orderId.toString(), response.paymentId.toString(), response.signature.toString());
+    showLoaderDialog(context, "Verifying Payment");
+    verify(response.orderId.toString(), response.paymentId.toString(), response.signature.toString()).whenComplete(() => Navigator.pop(context));
     /*Fluttertoast.showToast(
         msg: "SUCCESS: ${response.paymentId!}",
         toastLength: Toast.LENGTH_SHORT,

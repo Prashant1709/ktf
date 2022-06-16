@@ -13,7 +13,7 @@ import 'package:ktf/orders.dart';
 import 'package:ktf/profile.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:async';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ticket_widget/ticket_widget.dart';
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -32,20 +32,30 @@ List<String> sponsorLogoFileName = [
   "dominos.png",
   "dell.png"
 ];
+List<String> sponsorURL = [
+  "https://www.microsoft.com/en-in/",
+  "https://www.nvidia.com/en-in/",
+  "https://www.raspberrypi.com/",
+  "https://www.dominos.co.in/",
+  "https://www.dell.com/en-in"
+];
 
 Widget car =
     carousel("even_page.png", "Welcome Aboard", "We are glad you're here");
 Widget car2 = carousel("even_page.png", "Event-1", "I am event 1");
 Widget car3 = carousel("even_page.png", "Event-2", "I am event 2");
 
-Widget sponsorLogo(String image) {
+Widget sponsorLogo(String image,String url) {
   return Container(
     padding: EdgeInsets.only(right: 10),
     height: 80,
     width: 110,
     child: InkWell(
         borderRadius: BorderRadius.circular(80),
-        onTap: () {},
+        onTap: () async{
+            if (!await launchUrl(Uri.parse(url),mode: LaunchMode.inAppWebView,webViewConfiguration: const WebViewConfiguration(
+                headers: <String, String>{'my_header_key': 'my_header_value'}),)) throw 'Could not launch $url';
+        },
         child: CircleAvatar(
           radius: 40,
           backgroundImage: AssetImage("assets/$image"),
@@ -651,7 +661,7 @@ class _HomeState extends State<Home> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       for (int i = 0; i < sponsorLogoFileName.length; i++)
-                        sponsorLogo(sponsorLogoFileName[i]),
+                        sponsorLogo(sponsorLogoFileName[i],sponsorURL[i]),
                     ],
                   ),
                 ),
