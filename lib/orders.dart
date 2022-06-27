@@ -34,6 +34,7 @@ class _OrdersState extends State<Orders> {
   void initState() {
     super.initState();
     futureeve = fetchDat();
+    future=fetch();
   }
   late Future<Ord> futureeve;
   Future<Ord> fetchDat() async {
@@ -49,6 +50,28 @@ class _OrdersState extends State<Orders> {
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
+      return Ord.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load data');
+    }
+  }
+  late Future<Ord> future;
+  Future<Ord> fetch() async {
+    final String id =
+    await FirebaseAuth.instance.currentUser!.getIdToken(false);
+    final response = await http.get(
+      Uri.parse('https://ktf-backend.herokuapp.com/data/my-orders'),
+      headers: <String, String>{
+        "Authorization": "Bearer $id",
+        "content-type": "application/json"
+      },
+    );
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print(response.body);
       return Ord.fromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a 200 OK response,
